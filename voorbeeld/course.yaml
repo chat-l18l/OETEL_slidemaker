@@ -14,7 +14,7 @@ tts:
   model: eleven_multilingual_v2
   voice:
     nl: jfwdd64Nlhnj6vcFqRHZ
-    en: jfwdd64Nlhnj6vcFqRHZ
+    en: 5R0dqNg2gdV4QXOhUJ5T
   settings: {stability: 0.5, similarity_boost: 0.75, speed: 1.0}
 video:
   fps: 30
