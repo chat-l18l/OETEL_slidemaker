@@ -1,0 +1,386 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Lesson 1 — The workbench as a test lab — Reader</title>
+<link rel="stylesheet" href="../static/vendor/katex/katex.min.css">
+<link rel="stylesheet" href="../static/pygments.css">
+<link rel="stylesheet" href="../static/theme.css">
+<link rel="stylesheet" href="../static/print.css">
+<style>
+:root { --accent: #F0A030; --slide-scale: 0.34252; }
+@page { size: A4; margin: 18mm 18mm 22mm 18mm; }
+</style>
+</head>
+<body class="theme-print print-reader">
+
+
+
+
+
+
+
+
+<nav class="toc">
+<h1>Contents</h1>
+<ol>
+
+<li class="toc-l1"><a href="#ch-intro"><span class="toc-num">1</span><span class="toc-title">Introduction</span><span class="toc-page">2</span></a></li>
+
+<li class="toc-l2"><a href="#p-intro-titel"><span class="toc-num">1.1</span><span class="toc-title">The workbench as a test lab</span><span class="toc-page">2</span></a></li>
+
+<li class="toc-l2"><a href="#p-intro-agent-can"><span class="toc-num">1.2</span><span class="toc-title">The AI agent can:</span><span class="toc-page">3</span></a></li>
+
+<li class="toc-l2"><a href="#p-intro-kernidee"><span class="toc-num">1.3</span><span class="toc-title">Let the machine do the boring work, and keep the overview…</span><span class="toc-page">3</span></a></li>
+
+<li class="toc-l1"><a href="#ch-werkwijze"><span class="toc-num">2</span><span class="toc-title">Workflow</span><span class="toc-page">5</span></a></li>
+
+<li class="toc-l2"><a href="#p-werkwijze-cycle"><span class="toc-num">2.1</span><span class="toc-title">Ishikawa Circle</span><span class="toc-page">5</span></a></li>
+
+<li class="toc-l2"><a href="#p-werkwijze-board"><span class="toc-num">2.2</span><span class="toc-title">The board</span><span class="toc-page">6</span></a></li>
+
+<li class="toc-l2"><a href="#p-werkwijze-flow"><span class="toc-num">2.3</span><span class="toc-title">The test loop</span><span class="toc-page">6</span></a></li>
+
+<li class="toc-l2"><a href="#p-werkwijze-code-voorbeeld"><span class="toc-num">2.4</span><span class="toc-title">A test in Python</span><span class="toc-page">7</span></a></li>
+
+<li class="toc-l2"><a href="#p-werkwijze-formule"><span class="toc-num">2.5</span><span class="toc-title">Baud rate and time</span><span class="toc-page">7</span></a></li>
+
+<li class="toc-l2"><a href="#p-werkwijze-vergelijking"><span class="toc-num">2.6</span><span class="toc-title">Manual or with an agent?</span><span class="toc-page">8</span></a></li>
+
+<li class="toc-l2"><a href="#p-werkwijze-twee-kolommen"><span class="toc-num">2.7</span><span class="toc-title">Setup</span><span class="toc-page">8</span></a></li>
+
+<li class="toc-l2"><a href="#p-werkwijze-outro"><span class="toc-num">2.8</span><span class="toc-title">Thank you!</span><span class="toc-page">9</span></a></li>
+
+</ol>
+</nav>
+
+<article class="chapter">
+<h1 id="ch-intro" class="chapter-title"><span class="ch-num">Chapter 1</span>Introduction</h1>
+
+<aside class="keypoints"><h4>Key points</h4><ul><li>An AI agent can run the full test loop on its own.</li></ul></aside>
+
+
+<section class="reader-slide">
+<h3 id="p-intro-titel" class="rs-title"><span class="rs-num">1.1</span>The workbench as a test lab</h3>
+<figure><div class="slide-frame"><div class="slide-scale"><div class="reveal"><div class="slides">
+<section id="s-titel" class="layout-title" data-slide-id="titel">
+<div class="slide-inner">
+<div class="body"><h1>The workbench as a test lab</h1>
+<p>AI agents that flash, measure and test on their own</p>
+</div>
+
+</div>
+<img class="logo logo-bottom-right" src="../media/logo-63861caebd.svg" alt="">
+
+</section>
+</div></div></div></div></figure>
+<div class="reader-text"><p>In this lesson we build, step by step, a setup in which an AI agent can
+flash and test firmware on its own.</p>
+</div>
+</section>
+
+<section class="reader-slide">
+<h3 id="p-intro-agent-can" class="rs-title"><span class="rs-num">1.2</span>The AI agent can:</h3>
+<figure><div class="slide-frame"><div class="slide-scale"><div class="reveal"><div class="slides">
+<section id="s-agent-can" class="layout-bullets" data-slide-id="agent-can">
+<div class="slide-inner">
+<div class="body"><h2>The AI agent can:</h2>
+<ul>
+<li class="fragment" data-fragment-index="1">Flash firmware</li>
+<li class="fragment" data-fragment-index="2">Watch the serial log</li>
+<li class="fragment" data-fragment-index="3">Run tests</li>
+<li class="fragment" data-fragment-index="4">Validate the results</li>
+<li class="fragment" data-fragment-index="5">Fix problems in the code if needed</li>
+</ul>
+
+<p class="takeaway fragment" data-fragment-index="6"><svg class="arrow" viewBox="0 0 40 24" aria-hidden="true"><path d="M2 12 H34 M24 3 L36 12 L24 21" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/></svg> Workbench is an automated test lab</p></div>
+
+</div>
+<img class="logo logo-bottom-right" src="../media/logo-63861caebd.svg" alt="">
+
+</section>
+</div></div></div></div></figure>
+<div class="reader-text"><p>The agent uses ordinary command-line tools such as <code>esptool</code> and a serial
+monitor. See also the <a href="https://docs.espressif.com/">ESP-IDF documentation</a>.</p>
+</div>
+</section>
+
+<section class="reader-slide">
+<h3 id="p-intro-kernidee" class="rs-title"><span class="rs-num">1.3</span>Let the machine do the boring work, and keep the overview…</h3>
+<figure><div class="slide-frame"><div class="slide-scale"><div class="reveal"><div class="slides">
+<section id="s-kernidee" class="layout-quote" data-slide-id="kernidee">
+<div class="slide-inner">
+<div class="body"><blockquote>
+<p>Let the machine do the boring work, and keep the overview yourself.</p>
+</blockquote>
+</div>
+
+</div>
+<img class="logo logo-bottom-right" src="../media/logo-63861caebd.svg" alt="">
+
+</section>
+</div></div></div></div></figure>
+
+</section>
+
+
+<section class="quiz">
+<h2 id="ch-intro-quiz">Questions</h2>
+<ol>
+
+<li><p>Which task can the agent NOT perform on its own?</p><ul class="options"><li>Flash firmware</li><li>Read the serial log</li><li>Physically replace the board</li></ul></li>
+
+</ol>
+</section>
+
+</article>
+
+<article class="chapter">
+<h1 id="ch-werkwijze" class="chapter-title"><span class="ch-num">Chapter 2</span>Workflow</h1>
+
+<aside class="keypoints"><h4>Key points</h4><ul><li>Development is a cycle, not a straight line.</li><li>Know the connections of your board.</li></ul></aside>
+
+
+<section class="reader-slide">
+<h3 id="p-werkwijze-cycle" class="rs-title"><span class="rs-num">2.1</span>Ishikawa Circle</h3>
+<figure><div class="slide-frame"><div class="slide-scale"><div class="reveal"><div class="slides">
+<section id="s-cycle" class="layout-diagram title-top-right" data-slide-id="cycle">
+<div class="slide-inner">
+<div class="body"><h2>Ishikawa Circle</h2>
+</div>
+<div class="visual"><svg class="boxes" viewBox="0 0 1760 860" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid meet">
+<defs><marker id="ah-cycle-en" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="4.5" markerHeight="4.5" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="bx-head"/></marker></defs>
+<g class="fragment" data-fragment-index="2"><line class="bx-arrow" x1="407.4" y1="107.5" x2="692.6" y2="107.5" marker-end="url(#ah-cycle-en)"/>
+</g>
+<g class="fragment" data-fragment-index="3"><line class="bx-arrow" x1="1005.2" y1="175.5" x2="1150.8" y2="254.5" marker-end="url(#ah-cycle-en)"/>
+</g>
+<g class="fragment" data-fragment-index="4"><line class="bx-arrow" x1="1303.8" y1="390.5" x2="1336.2" y2="469.5" marker-end="url(#ah-cycle-en)"/>
+</g>
+<g class="fragment" data-fragment-index="5"><line class="bx-arrow" x1="1336.2" y1="605.5" x2="1303.8" y2="684.5" marker-end="url(#ah-cycle-en)"/>
+</g>
+<g class="fragment" data-fragment-index="6"><line class="bx-arrow" x1="1088.6" y1="752.5" x2="814.9" y2="752.5" marker-end="url(#ah-cycle-en)"/>
+</g>
+<g class="fragment" data-fragment-index="7"><line class="bx-arrow" x1="504.7" y1="684.5" x2="375.3" y2="605.5" marker-end="url(#ah-cycle-en)"/>
+</g>
+<g class="fragment" data-fragment-index="8"><line class="bx-arrow" x1="298.8" y1="469.5" x2="339.2" y2="390.5" marker-end="url(#ah-cycle-en)"/>
+</g>
+<g class="fragment" data-fragment-index="8"><line class="bx-arrow" x1="595.9" y1="322.5" x2="1100.1" y2="322.5" marker-end="url(#ah-cycle-en)"/>
+</g>
+<g class="fragment" data-fragment-index="1" data-box="repo"><rect class="bx-box bx-fill" x="40.6" y="47.5" width="358.8" height="120.0"/>
+<text class="bx-text bx-text-fill" x="220.0" y="107.5" font-size="46.0" text-anchor="middle" dominant-baseline="central">Step 1 - Repo</text>
+</g>
+<g class="fragment" data-fragment-index="2" data-box="idea"><rect class="bx-box bx-fill" x="700.6" y="47.5" width="358.8" height="120.0"/>
+<text class="bx-text bx-text-fill" x="880.0" y="107.5" font-size="46.0" text-anchor="middle" dominant-baseline="central">Step 2 - Idea</text>
+</g>
+<g class="fragment" data-fragment-index="3" data-box="fsd"><rect class="bx-box bx-fill" x="1108.1" y="262.5" width="335.8" height="120.0"/>
+<text class="bx-text bx-text-fill" x="1276.0" y="322.5" font-size="46.0" text-anchor="middle" dominant-baseline="central">Step 3 - FSD</text>
+</g>
+<g class="fragment" data-fragment-index="4" data-box="impl"><rect class="bx-box bx-fill" x="1127.1" y="477.5" width="473.8" height="120.0"/>
+<text class="bx-text bx-text-fill" x="1364.0" y="537.5" font-size="46.0" text-anchor="middle" dominant-baseline="central">Step 4 - Implement</text>
+</g>
+<g class="fragment" data-fragment-index="5" data-box="code"><rect class="bx-box bx-fill" x="1096.6" y="692.5" width="358.8" height="120.0"/>
+<text class="bx-text bx-text-fill" x="1276.0" y="752.5" font-size="46.0" text-anchor="middle" dominant-baseline="central">Step 5 - Code</text>
+</g>
+<g class="fragment" data-fragment-index="6" data-box="flash"><rect class="bx-box bx-fill" x="425.1" y="692.5" width="381.8" height="120.0"/>
+<text class="bx-text bx-text-fill" x="616.0" y="752.5" font-size="46.0" text-anchor="middle" dominant-baseline="central">Step 6 - Flash</text>
+</g>
+<g class="fragment" data-fragment-index="7" data-box="test"><rect class="bx-box bx-fill" x="50.1" y="477.5" width="427.8" height="120.0"/>
+<text class="bx-text bx-text-fill" x="264.0" y="537.5" font-size="46.0" text-anchor="middle" dominant-baseline="central">Step 7 - Testing</text>
+</g>
+<g class="fragment" data-fragment-index="8" data-box="enh"><rect class="bx-box bx-fill" x="160.1" y="262.5" width="427.8" height="120.0"/>
+<text class="bx-text bx-text-fill" x="374.0" y="322.5" font-size="46.0" text-anchor="middle" dominant-baseline="central">Step 8 - Enhance</text>
+</g>
+</svg></div>
+</div>
+<img class="logo logo-bottom-right" src="../media/logo-63861caebd.svg" alt="">
+
+</section>
+</div></div></div></div></figure>
+
+</section>
+
+<section class="reader-slide">
+<h3 id="p-werkwijze-board" class="rs-title"><span class="rs-num">2.2</span>The board</h3>
+<figure><div class="slide-frame"><div class="slide-scale"><div class="reveal"><div class="slides">
+<section id="s-board" class="layout-callouts" data-slide-id="board">
+<div class="slide-inner">
+<div class="body"><h2>The board</h2>
+</div>
+<div class="visual"><div class="callout-stage" style="aspect-ratio:1600/1000"><img src="../media/devboard-b48e7a4e5b.png" alt=""><svg viewBox="0 0 1600 1000" xmlns="http://www.w3.org/2000/svg"><defs><marker id="coh-board-en" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto"><path d="M0,0 L10,5 L0,10 z" class="co-head"/></marker></defs><g class="fragment" data-fragment-index="1"><circle class="co-shape" cx="248.0" cy="495.0" r="96.0" stroke-width="8.0"/><rect class="co-label-bg" x="369.0" y="463.8" width="223.8" height="62.4" rx="10.4"/><text class="co-label" x="387.7" y="495.0" font-size="41.6" text-anchor="start" dominant-baseline="central">USB port</text></g><g class="fragment" data-fragment-index="2"><line class="co-shape" x1="352.0" y1="880.0" x2="480.0" y2="680.0" stroke-width="8.0" marker-end="url(#coh-board-en)"/><rect class="co-label-bg" x="35.0" y="848.8" width="317.0" height="62.4" rx="10.4"/><text class="co-label" x="333.3" y="880.0" font-size="41.6" text-anchor="end" dominant-baseline="central">Reset button</text></g><g class="fragment" data-fragment-index="3"><rect class="co-shape" x="688.0" y="290.0" width="416.0" height="280.0" stroke-width="8.0"/><rect class="co-label-bg" x="688.0" y="213.0" width="317.0" height="62.4" rx="10.4"/><text class="co-label" x="706.7" y="244.2" font-size="41.6" text-anchor="start" dominant-baseline="central">ESP32 module</text></g></svg></div></div>
+</div>
+<img class="logo logo-bottom-right" src="../media/logo-63861caebd.svg" alt="">
+
+</section>
+</div></div></div></div></figure>
+
+</section>
+
+<section class="reader-slide">
+<h3 id="p-werkwijze-flow" class="rs-title"><span class="rs-num">2.3</span>The test loop</h3>
+<figure><div class="slide-frame"><div class="slide-scale"><div class="reveal"><div class="slides">
+<section id="s-flow" class="layout-diagram" data-slide-id="flow">
+<div class="slide-inner">
+<div class="body"><h2>The test loop</h2>
+</div>
+<div class="visual"><div class="ext-diagram"><svg id="m9ihrv4ywha" xmlns="http://www.w3.org/2000/svg" class="flowchart" viewBox="0 0 1028 192" role="graphics-document document" aria-roledescription="flowchart-v2"><style>#m9ihrv4ywha{font-family:Questrial,sans-serif;font-size:28px;fill:#1A1A1A;}@keyframes edge-animation-frame{from{stroke-dashoffset:0;}}@keyframes dash{to{stroke-dashoffset:0;}}#m9ihrv4ywha .edge-animation-slow{stroke-dasharray:9,5!important;stroke-dashoffset:900;animation:dash 50s linear infinite;stroke-linecap:round;}#m9ihrv4ywha .edge-animation-fast{stroke-dasharray:9,5!important;stroke-dashoffset:900;animation:dash 20s linear infinite;stroke-linecap:round;}#m9ihrv4ywha .error-icon{fill:#FFFFFF;}#m9ihrv4ywha .error-text{fill:#000000;stroke:#000000;}#m9ihrv4ywha .edge-thickness-normal{stroke-width:1px;}#m9ihrv4ywha .edge-thickness-thick{stroke-width:3.5px;}#m9ihrv4ywha .edge-pattern-solid{stroke-dasharray:0;}#m9ihrv4ywha .edge-thickness-invisible{stroke-width:0;fill:none;}#m9ihrv4ywha .edge-pattern-dashed{stroke-dasharray:3;}#m9ihrv4ywha .edge-pattern-dotted{stroke-dasharray:2;}#m9ihrv4ywha .marker{fill:#C77A12;stroke:#C77A12;}#m9ihrv4ywha .marker.cross{stroke:#C77A12;}#m9ihrv4ywha svg{font-family:Questrial,sans-serif;font-size:28px;}#m9ihrv4ywha p{margin:0;}#m9ihrv4ywha .label{font-family:Questrial,sans-serif;color:#1A1A1A;}#m9ihrv4ywha .cluster-label text{fill:#000000;}#m9ihrv4ywha .cluster-label span{color:#000000;}#m9ihrv4ywha .cluster-label span p{background-color:transparent;}#m9ihrv4ywha .label text,#m9ihrv4ywha span{fill:#1A1A1A;color:#1A1A1A;}#m9ihrv4ywha .node rect,#m9ihrv4ywha .node circle,#m9ihrv4ywha .node ellipse,#m9ihrv4ywha .node polygon,#m9ihrv4ywha .node path{fill:#FCE3BD;stroke:#D88A1C;stroke-width:1px;}#m9ihrv4ywha .rough-node .label text,#m9ihrv4ywha .node .label text,#m9ihrv4ywha .image-shape .label,#m9ihrv4ywha .icon-shape .label{text-anchor:middle;}#m9ihrv4ywha .node .katex path{fill:#000;stroke:#000;stroke-width:1px;}#m9ihrv4ywha .rough-node .label,#m9ihrv4ywha .node .label,#m9ihrv4ywha .image-shape .label,#m9ihrv4ywha .icon-shape .label{text-align:center;}#m9ihrv4ywha .node.clickable{cursor:pointer;}#m9ihrv4ywha .root .anchor path{fill:#C77A12!important;stroke-width:0;stroke:#C77A12;}#m9ihrv4ywha .arrowheadPath{fill:rgba(255, 255, 255, 0);}#m9ihrv4ywha .edgePaths .path{stroke:#C77A12;stroke-width:1px;}#m9ihrv4ywha .flowchart-link{stroke:#C77A12;fill:none;}#m9ihrv4ywha .edgeLabel{background-color:transparent;text-align:center;}#m9ihrv4ywha .edgeLabel p{background-color:transparent;}#m9ihrv4ywha .edgeLabel rect{opacity:0.5;background-color:transparent;fill:transparent;}#m9ihrv4ywha .labelBkg{background-color:rgba(0, 0, 0, 0.5);}#m9ihrv4ywha .cluster rect{fill:#FFFFFF;stroke:hsl(0, 0%, 90%);stroke-width:1px;}#m9ihrv4ywha .cluster text{fill:#000000;}#m9ihrv4ywha .cluster span{color:#000000;}#m9ihrv4ywha .node .collapsed-indicator{fill:hsl(0, 0%, 90%);stroke:none;opacity:0.6;}#m9ihrv4ywha .node .collapsed-separator{stroke:hsl(0, 0%, 90%);stroke-width:0.75px;}#m9ihrv4ywha div.mermaidTooltip{position:absolute;text-align:center;max-width:200px;padding:2px;font-family:Questrial,sans-serif;font-size:12px;background:#FFFFFF;border:1px solid hsl(0, 0%, 90%);border-radius:2px;pointer-events:none;z-index:100;}#m9ihrv4ywha .flowchartTitleText{text-anchor:middle;font-size:18px;fill:#1A1A1A;}#m9ihrv4ywha rect.text{fill:none;stroke-width:0;}#m9ihrv4ywha .icon-shape,#m9ihrv4ywha .image-shape{background-color:transparent;text-align:center;}#m9ihrv4ywha .icon-shape p,#m9ihrv4ywha .image-shape p{background-color:transparent;padding:2px;}#m9ihrv4ywha .icon-shape .label rect,#m9ihrv4ywha .image-shape .label rect{opacity:0.5;background-color:transparent;fill:transparent;}#m9ihrv4ywha .label-icon{display:inline-block;height:1em;overflow:visible;vertical-align:-0.125em;}#m9ihrv4ywha .node .label-icon path{fill:currentColor;stroke:revert;stroke-width:revert;}#m9ihrv4ywha .node .neo-node{stroke:#D88A1C;}#m9ihrv4ywha [data-look="neo"].node rect,#m9ihrv4ywha [data-look="neo"].cluster rect,#m9ihrv4ywha [data-look="neo"].node polygon{stroke:url(#m9ihrv4ywha-gradient);filter:drop-shadow( 1px 2px 2px rgba(185,185,185,1));}#m9ihrv4ywha [data-look="neo"].swimlane.cluster rect{filter:none;}#m9ihrv4ywha [data-look="neo"].node path{stroke:url(#m9ihrv4ywha-gradient);stroke-width:1px;}#m9ihrv4ywha [data-look="neo"].node .outer-path{filter:drop-shadow( 1px 2px 2px rgba(185,185,185,1));}#m9ihrv4ywha [data-look="neo"].node .neo-line path{stroke:#D88A1C;filter:none;}#m9ihrv4ywha [data-look="neo"].node circle{stroke:url(#m9ihrv4ywha-gradient);filter:drop-shadow( 1px 2px 2px rgba(185,185,185,1));}#m9ihrv4ywha [data-look="neo"].node circle .state-start{fill:#000000;}#m9ihrv4ywha [data-look="neo"].icon-shape .icon{fill:url(#m9ihrv4ywha-gradient);filter:drop-shadow( 1px 2px 2px rgba(185,185,185,1));}#m9ihrv4ywha [data-look="neo"].icon-shape .icon-neo path{stroke:url(#m9ihrv4ywha-gradient);filter:drop-shadow( 1px 2px 2px rgba(185,185,185,1));}#m9ihrv4ywha :root{--mermaid-font-family:"trebuchet ms",verdana,arial,sans-serif;}</style><g><marker id="m9ihrv4ywha_flowchart-v2-pointEnd" class="marker flowchart-v2" viewBox="0 0 10 10" refX="5" refY="5" markerUnits="userSpaceOnUse" markerWidth="8" markerHeight="8" orient="auto"><path d="M 0 0 L 10 5 L 0 10 z" class="arrowMarkerPath" style="stroke-width: 1; stroke-dasharray: 1, 0;"></path></marker><marker id="m9ihrv4ywha_flowchart-v2-pointStart" class="marker flowchart-v2" viewBox="0 0 10 10" refX="4.5" refY="5" markerUnits="userSpaceOnUse" markerWidth="8" markerHeight="8" orient="auto"><path d="M 0 5 L 10 10 L 10 0 z" class="arrowMarkerPath" style="stroke-width: 1; stroke-dasharray: 1, 0;"></path></marker><marker id="m9ihrv4ywha_flowchart-v2-pointEnd-margin" class="marker flowchart-v2" viewBox="0 0 11.5 14" refX="11.5" refY="7" markerUnits="userSpaceOnUse" markerWidth="10.5" markerHeight="14" orient="auto"><path d="M 0 0 L 11.5 7 L 0 14 z" class="arrowMarkerPath" style="stroke-width: 0; stroke-dasharray: 1, 0;"></path></marker><marker id="m9ihrv4ywha_flowchart-v2-pointStart-margin" class="marker flowchart-v2" viewBox="0 0 11.5 14" refX="1" refY="7" markerUnits="userSpaceOnUse" markerWidth="11.5" markerHeight="14" orient="auto"><polygon points="0,7 11.5,14 11.5,0" class="arrowMarkerPath" style="stroke-width: 0; stroke-dasharray: 1, 0;"></polygon></marker><marker id="m9ihrv4ywha_flowchart-v2-circleEnd" class="marker flowchart-v2" viewBox="0 0 10 10" refX="11" refY="5" markerUnits="userSpaceOnUse" markerWidth="11" markerHeight="11" orient="auto"><circle cx="5" cy="5" r="5" class="arrowMarkerPath" style="stroke-width: 1; stroke-dasharray: 1, 0;"></circle></marker><marker id="m9ihrv4ywha_flowchart-v2-circleStart" class="marker flowchart-v2" viewBox="0 0 10 10" refX="-1" refY="5" markerUnits="userSpaceOnUse" markerWidth="11" markerHeight="11" orient="auto"><circle cx="5" cy="5" r="5" class="arrowMarkerPath" style="stroke-width: 1; stroke-dasharray: 1, 0;"></circle></marker><marker id="m9ihrv4ywha_flowchart-v2-circleEnd-margin" class="marker flowchart-v2" viewBox="0 0 10 10" refY="5" refX="12.25" markerUnits="userSpaceOnUse" markerWidth="14" markerHeight="14" orient="auto"><circle cx="5" cy="5" r="5" class="arrowMarkerPath" style="stroke-width: 0; stroke-dasharray: 1, 0;"></circle></marker><marker id="m9ihrv4ywha_flowchart-v2-circleStart-margin" class="marker flowchart-v2" viewBox="0 0 10 10" refX="-2" refY="5" markerUnits="userSpaceOnUse" markerWidth="14" markerHeight="14" orient="auto"><circle cx="5" cy="5" r="5" class="arrowMarkerPath" style="stroke-width: 0; stroke-dasharray: 1, 0;"></circle></marker><marker id="m9ihrv4ywha_flowchart-v2-crossEnd" class="marker cross flowchart-v2" viewBox="0 0 11 11" refX="12" refY="5.2" markerUnits="userSpaceOnUse" markerWidth="11" markerHeight="11" orient="auto"><path d="M 1,1 l 9,9 M 10,1 l -9,9" class="arrowMarkerPath" style="stroke-width: 2; stroke-dasharray: 1, 0;"></path></marker><marker id="m9ihrv4ywha_flowchart-v2-crossStart" class="marker cross flowchart-v2" viewBox="0 0 11 11" refX="-1" refY="5.2" markerUnits="userSpaceOnUse" markerWidth="11" markerHeight="11" orient="auto"><path d="M 1,1 l 9,9 M 10,1 l -9,9" class="arrowMarkerPath" style="stroke-width: 2; stroke-dasharray: 1, 0;"></path></marker><marker id="m9ihrv4ywha_flowchart-v2-crossEnd-margin" class="marker cross flowchart-v2" viewBox="0 0 15 15" refX="17.7" refY="7.5" markerUnits="userSpaceOnUse" markerWidth="12" markerHeight="12" orient="auto"><path d="M 1,1 L 14,14 M 1,14 L 14,1" class="arrowMarkerPath" style="stroke-width: 2.5;"></path></marker><marker id="m9ihrv4ywha_flowchart-v2-crossStart-margin" class="marker cross flowchart-v2" viewBox="0 0 15 15" refX="-3.5" refY="7.5" markerUnits="userSpaceOnUse" markerWidth="12" markerHeight="12" orient="auto"><path d="M 1,1 L 14,14 M 1,14 L 14,1" class="arrowMarkerPath" style="stroke-width: 2.5; stroke-dasharray: 1, 0;"></path></marker><g class="root"><g class="clusters"></g><g class="edgePaths"><path d="M148,71.132L152.167,69.651C156.333,68.171,164.667,65.211,172.333,63.73C180,62.25,187,62.25,190.5,62.25L194,62.25" id="m9ihrv4ywha-L_A_B_0" class="edge-thickness-normal edge-pattern-solid edge-thickness-normal edge-pattern-solid flowchart-link" style=";" data-edge="true" data-et="edge" data-id="L_A_B_0" data-points="W3sieCI6MTQ4LCJ5Ijo3MS4xMzE1Nzg5NDczNjg0Mn0seyJ4IjoxNzMsInkiOjYyLjI1fSx7IngiOjE5OCwieSI6NjIuMjV9XQ==" data-look="classic" marker-end="url(#m9ihrv4ywha_flowchart-v2-pointEnd)"></path><path d="M334,62.25L342.5,62.25C351,62.25,368,62.25,384.333,62.25C400.667,62.25,416.333,62.25,424.167,62.25L432,62.25" id="m9ihrv4ywha-L_B_C_0" class="edge-thickness-normal edge-pattern-solid edge-thickness-normal edge-pattern-solid flowchart-link" style=";" data-edge="true" data-et="edge" data-id="L_B_C_0" data-points="W3sieCI6MzM0LCJ5Ijo2Mi4yNX0seyJ4IjozODUsInkiOjYyLjI1fSx7IngiOjQzNiwieSI6NjIuMjV9XQ==" data-look="classic" marker-end="url(#m9ihrv4ywha_flowchart-v2-pointEnd)"></path><path d="M577,62.25L581.167,62.25C585.333,62.25,593.667,62.25,604.734,64.311C615.802,66.372,629.604,70.495,636.505,72.556L643.406,74.617" id="m9ihrv4ywha-L_C_D_0" class="edge-thickness-normal edge-pattern-solid edge-thickness-normal edge-pattern-solid flowchart-link" style=";" data-edge="true" data-et="edge" data-id="L_C_D_0" data-points="W3sieCI6NTc3LCJ5Ijo2Mi4yNX0seyJ4Ijo2MDIsInkiOjYyLjI1fSx7IngiOjY0Ny4yMzg1MDA4NTE3ODg4LCJ5Ijo3NS43NjE0OTkxNDgyMTEyNH1d" data-look="classic" marker-end="url(#m9ihrv4ywha_flowchart-v2-pointEnd)"></path><path d="M803,96L809.417,96C815.833,96,828.667,96,840.833,96C853,96,864.5,96,870.25,96L876,96" id="m9ihrv4ywha-L_D_E_0" class="edge-thickness-normal edge-pattern-solid edge-thickness-normal edge-pattern-solid flowchart-link" style=";" data-edge="true" data-et="edge" data-id="L_D_E_0" data-points="W3sieCI6ODAzLCJ5Ijo5Nn0seyJ4Ijo4NDEuNSwieSI6OTZ9LHsieCI6ODgwLCJ5Ijo5Nn1d" data-look="classic" marker-end="url(#m9ihrv4ywha_flowchart-v2-pointEnd)"></path><path d="M647.239,116.239L639.699,118.49C632.159,120.742,617.08,125.246,593.623,127.498C570.167,129.75,538.333,129.75,502.167,129.75C466,129.75,425.5,129.75,385.417,129.75C345.333,129.75,305.667,129.75,270.333,129.75C235,129.75,204,129.75,184.962,128.493C165.923,127.236,158.846,124.722,155.308,123.465L151.769,122.207" id="m9ihrv4ywha-L_D_A_0" class="edge-thickness-normal edge-pattern-solid edge-thickness-normal edge-pattern-solid flowchart-link" style=";" data-edge="true" data-et="edge" data-id="L_D_A_0" data-points="W3sieCI6NjQ3LjIzODUwMDg1MTc4ODgsInkiOjExNi4yMzg1MDA4NTE3ODg3Nn0seyJ4Ijo2MDIsInkiOjEyOS43NX0seyJ4Ijo1MDYuNSwieSI6MTI5Ljc1fSx7IngiOjM4NSwieSI6MTI5Ljc1fSx7IngiOjI2NiwieSI6MTI5Ljc1fSx7IngiOjE3MywieSI6MTI5Ljc1fSx7IngiOjE0OCwieSI6MTIwLjg2ODQyMTA1MjYzMTU4fV0=" data-look="classic" marker-end="url(#m9ihrv4ywha_flowchart-v2-pointEnd)"></path></g><g class="edgeLabels"><g class="edgeLabel"><g class="label" data-id="L_A_B_0" transform="translate(0, 0)"><text y="-10.1" text-anchor="middle"><tspan class="text-outer-tspan row" x="0" y="-0.1em" dy="1.1em" text-anchor="middle"></tspan></text></g></g><g><rect class="background" style="stroke: none"></rect></g><g class="edgeLabel"><g class="label" data-id="L_B_C_0" transform="translate(0, 0)"><text y="-10.1" text-anchor="middle"><tspan class="text-outer-tspan row" x="0" y="-0.1em" dy="1.1em" text-anchor="middle"></tspan></text></g></g><g><rect class="background" style="stroke: none"></rect></g><g class="edgeLabel"><g class="label" data-id="L_C_D_0" transform="translate(0, 0)"><text y="-10.1" text-anchor="middle"><tspan class="text-outer-tspan row" x="0" y="-0.1em" dy="1.1em" text-anchor="middle"></tspan></text></g></g><g><rect class="background" style="stroke: none"></rect></g><g class="edgeLabel" transform="translate(841.5, 96)"><g class="label" data-id="L_D_E_0" transform="translate(0, -19.500000953674316)"><g><rect class="background" style="" x="-13.5" y="3.000001907348633" width="27" height="32.99999809265137"></rect><text y="-10.1" text-anchor="middle" style=""><tspan class="text-outer-tspan row" x="0" y="-0.1em" dy="1.1em" text-anchor="middle"><tspan font-style="normal" class="text-inner-tspan" font-weight="normal">ja</tspan></tspan></text></g></g></g><g class="edgeLabel" transform="translate(385, 129.75)"><g class="label" data-id="L_D_A_0" transform="translate(0, -19.500000953674316)"><g><rect class="background" style="" x="-26" y="3.000001907348633" width="52" height="32.99999809265137"></rect><text y="-10.1" text-anchor="middle" style=""><tspan class="text-outer-tspan row" x="0" y="-0.1em" dy="1.1em" text-anchor="middle"><tspan font-style="normal" class="text-inner-tspan" font-weight="normal">nee</tspan></tspan></text></g></g></g></g><g class="nodes"><g class="node default" id="m9ihrv4ywha-flowchart-A-0" data-look="classic" transform="translate(78, 96)"><rect class="basic label-container" style="" x="-70" y="-32.499999046325684" width="140" height="64.99999809265137"></rect><g class="label" style="" transform="translate(0, -14.499999046325684)"><rect></rect><g><rect class="background" style="stroke: none"></rect><text y="-10.1" style=""><tspan class="text-outer-tspan row" x="0" y="-0.1em" dy="1.1em"><tspan font-style="normal" class="text-inner-tspan" font-weight="normal">Code</tspan></tspan></text></g></g></g><g class="node default" id="m9ihrv4ywha-flowchart-B-1" data-look="classic" transform="translate(266, 62.25)"><rect class="basic label-container" style="" x="-68" y="-32.499999046325684" width="136" height="64.99999809265137"></rect><g class="label" style="" transform="translate(0, -14.499999046325684)"><rect></rect><g><rect class="background" style="stroke: none"></rect><text y="-10.1" style=""><tspan class="text-outer-tspan row" x="0" y="-0.1em" dy="1.1em"><tspan font-style="normal" class="text-inner-tspan" font-weight="normal">Build</tspan></tspan></text></g></g></g><g class="node default" id="m9ihrv4ywha-flowchart-C-3" data-look="classic" transform="translate(506.5, 62.25)"><rect class="basic label-container" style="" x="-70.5" y="-32.499999046325684" width="141" height="64.99999809265137"></rect><g class="label" style="" transform="translate(0, -14.499999046325684)"><rect></rect><g><rect class="background" style="stroke: none"></rect><text y="-10.1" style=""><tspan class="text-outer-tspan row" x="0" y="-0.1em" dy="1.1em"><tspan font-style="normal" class="text-inner-tspan" font-weight="normal">Flash</tspan></tspan></text></g></g></g><g class="node default" id="m9ihrv4ywha-flowchart-D-5" data-look="classic" transform="translate(715, 96)"><polygon points="87.99999904632568,0 175.99999809265137,-87.99999904632568 87.99999904632568,-175.99999809265137 0,-87.99999904632568" class="label-container" transform="translate(-87.49999904632568, 87.99999904632568)"></polygon><g class="label" style="" transform="translate(0, -14.499999046325684)"><rect></rect><g><rect class="background" style="stroke: none"></rect><text y="-10.1" style=""><tspan class="text-outer-tspan row" x="0" y="-0.1em" dy="1.1em"><tspan font-style="normal" class="text-inner-tspan" font-weight="normal">Test</tspan><tspan font-style="normal" class="text-inner-tspan" font-weight="normal"> OK?</tspan></tspan></text></g></g></g><g class="node default" id="m9ihrv4ywha-flowchart-E-7" data-look="classic" transform="translate(950, 96)"><rect class="basic label-container" style="" x="-70" y="-32.499999046325684" width="140" height="64.99999809265137"></rect><g class="label" style="" transform="translate(0, -14.499999046325684)"><rect></rect><g><rect class="background" style="stroke: none"></rect><text y="-10.1" style=""><tspan class="text-outer-tspan row" x="0" y="-0.1em" dy="1.1em"><tspan font-style="normal" class="text-inner-tspan" font-weight="normal">Klaar</tspan></tspan></text></g></g></g></g></g></g><defs><filter id="m9ihrv4ywha-drop-shadow" height="130%" width="130%"><feDropShadow dx="4" dy="4" stdDeviation="0" flood-opacity="0.06" flood-color="#000000"></feDropShadow></filter></defs><defs><filter id="m9ihrv4ywha-drop-shadow-small" height="150%" width="150%"><feDropShadow dx="2" dy="2" stdDeviation="0" flood-opacity="0.06" flood-color="#000000"></feDropShadow></filter></defs><linearGradient id="m9ihrv4ywha-gradient" gradientUnits="objectBoundingBox" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" stop-color="#D88A1C" stop-opacity="1"></stop><stop offset="100%" stop-color="hsl(0, 0%, 85.2941176471%)" stop-opacity="1"></stop></linearGradient></svg></div></div>
+</div>
+<img class="logo logo-bottom-right" src="../media/logo-63861caebd.svg" alt="">
+
+</section>
+</div></div></div></div></figure>
+
+</section>
+
+<section class="reader-slide">
+<h3 id="p-werkwijze-code-voorbeeld" class="rs-title"><span class="rs-num">2.4</span>A test in Python</h3>
+<figure><div class="slide-frame"><div class="slide-scale"><div class="reveal"><div class="slides">
+<section id="s-code-voorbeeld" class="layout-code" data-slide-id="code-voorbeeld">
+<div class="slide-inner">
+<div class="body"><h2>A test in Python</h2>
+<div class="code-wrap" data-prefix="code-voorbeeld-en-c0"><div class="code"><pre><span></span><code><span id="code-voorbeeld-en-c0-1"><span class="kn">import</span><span class="w"> </span><span class="nn">serial</span>
+</span><span id="code-voorbeeld-en-c0-2"><span class="n">port</span> <span class="o">=</span> <span class="n">serial</span><span class="o">.</span><span class="n">Serial</span><span class="p">(</span><span class="s2">"/dev/ttyUSB0"</span><span class="p">,</span> <span class="mi">115200</span><span class="p">)</span>
+</span><span id="code-voorbeeld-en-c0-3">
+</span><span id="code-voorbeeld-en-c0-4"><span class="k">def</span><span class="w"> </span><span class="nf">wait_for</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="mi">10</span><span class="p">):</span>
+</span><span id="code-voorbeeld-en-c0-5">    <span class="n">line</span> <span class="o">=</span> <span class="n">port</span><span class="o">.</span><span class="n">read_until</span><span class="p">(</span><span class="n">text</span><span class="o">.</span><span class="n">encode</span><span class="p">(),</span> <span class="n">timeout</span><span class="p">)</span>
+</span><span id="code-voorbeeld-en-c0-6">    <span class="k">return</span> <span class="n">text</span> <span class="ow">in</span> <span class="n">line</span><span class="o">.</span><span class="n">decode</span><span class="p">()</span>
+</span><span id="code-voorbeeld-en-c0-7">
+</span><span id="code-voorbeeld-en-c0-8"><span class="k">assert</span> <span class="n">wait_for</span><span class="p">(</span><span class="s2">"BOOT OK"</span><span class="p">)</span>
+</span></code></pre></div>
+<span class="fragment code-step" data-fragment-index="1" data-lines="1,2"></span><span class="fragment code-step" data-fragment-index="2" data-lines="4,5,6"></span><span class="fragment code-step" data-fragment-index="3" data-lines="8"></span></div></div>
+
+</div>
+<img class="logo logo-bottom-right" src="../media/logo-63861caebd.svg" alt="">
+
+</section>
+</div></div></div></div></figure>
+
+</section>
+
+<section class="reader-slide">
+<h3 id="p-werkwijze-formule" class="rs-title"><span class="rs-num">2.5</span>Baud rate and time</h3>
+<figure><div class="slide-frame"><div class="slide-scale"><div class="reveal"><div class="slides">
+<section id="s-formule" class="layout-formula" data-slide-id="formule">
+<div class="slide-inner">
+<div class="body"><h2>Baud rate and time</h2>
+<div class="math">\[t_{byte} = \frac{10}{\text{baud rate}}\]</div>
+<p>At 115200 baud, one byte takes about <span class="math">\(87\,\mu s\)</span>.</p>
+</div>
+
+</div>
+<img class="logo logo-bottom-right" src="../media/logo-63861caebd.svg" alt="">
+
+</section>
+</div></div></div></div></figure>
+
+</section>
+
+<section class="reader-slide">
+<h3 id="p-werkwijze-vergelijking" class="rs-title"><span class="rs-num">2.6</span>Manual or with an agent?</h3>
+<figure><div class="slide-frame"><div class="slide-scale"><div class="reveal"><div class="slides">
+<section id="s-vergelijking" class="layout-table" data-slide-id="vergelijking">
+<div class="slide-inner">
+<div class="body"><h2>Manual or with an agent?</h2>
+<table>
+<thead>
+<tr>
+<th>Task</th>
+<th>Manual</th>
+<th>With agent</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Flashing</td>
+<td>1 min</td>
+<td>automatic</td>
+</tr>
+<tr>
+<td>Reading logs</td>
+<td>eyes on screen</td>
+<td>continuous</td>
+</tr>
+<tr>
+<td>Testing</td>
+<td>when you remember</td>
+<td>every build</td>
+</tr>
+</tbody>
+</table>
+</div>
+
+</div>
+<img class="logo logo-bottom-right" src="../media/logo-63861caebd.svg" alt="">
+
+</section>
+</div></div></div></div></figure>
+
+</section>
+
+<section class="reader-slide">
+<h3 id="p-werkwijze-twee-kolommen" class="rs-title"><span class="rs-num">2.7</span>Setup</h3>
+<figure><div class="slide-frame"><div class="slide-scale"><div class="reveal"><div class="slides">
+<section id="s-twee-kolommen" class="layout-two-col" data-slide-id="twee-kolommen">
+<div class="slide-inner">
+<div class="body"><div class="columns"><div class="col"><h2>Setup</h2>
+<ul>
+<li class="fragment" data-fragment-index="1">Laptop with agent</li>
+<li class="fragment" data-fragment-index="2">USB hub</li>
+<li class="fragment" data-fragment-index="3">Test board</li>
+</ul>
+</div><div class="col"><p><img src="../media/devboard-b48e7a4e5b.png" alt="" /></p>
+</div></div></div>
+
+</div>
+<img class="logo logo-bottom-right" src="../media/logo-63861caebd.svg" alt="">
+
+</section>
+</div></div></div></div></figure>
+
+</section>
+
+<section class="reader-slide">
+<h3 id="p-werkwijze-outro" class="rs-title"><span class="rs-num">2.8</span>Thank you!</h3>
+<figure><div class="slide-frame"><div class="slide-scale"><div class="reveal"><div class="slides">
+<section id="s-outro" class="layout-title" data-slide-id="outro">
+<div class="slide-inner">
+<div class="body"><h1>Thank you!</h1>
+<p>Questions? Comments? Let me know.</p>
+</div>
+
+</div>
+
+
+</section>
+</div></div></div></div></figure>
+
+</section>
+
+
+</article>
+
+
+
+<article class="appendix">
+<h1 id="answers">Answers</h1>
+
+<h3>Chapter 1 — Introduction</h3>
+<ol><li>Physically replace the board</li></ol>
+
+</article>
+
+
+
+<article class="appendix">
+<h1 id="sources">Sources</h1>
+<ol class="sources">
+<li><span class="src-title">ESP-IDF documentation</span><br><a href="https://docs.espressif.com/">https://docs.espressif.com/</a></li>
+</ol>
+</article>
+
+
+
+<script src="../static/vendor/katex/katex.min.js"></script>
+<script src="../static/vendor/katex/auto-render.min.js"></script>
+<script src="../static/print.js"></script>
+</body>
+</html>

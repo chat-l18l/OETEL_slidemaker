@@ -1,4 +1,7 @@
 build/
+# build-output van de voorbeeldcursus wel in de repo (HTML + PDF), zonder cache
+!voorbeeld/build/
+voorbeeld/build/.cache/
 .venv/
 __pycache__/
 *.egg-info/

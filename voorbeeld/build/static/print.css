@@ -1,0 +1,120 @@
+/* slidesmith — print documents (slides PDF and reader PDF). Used with body.theme-print. */
+
+html, body { margin: 0; padding: 0; }
+body.theme-print { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+
+/* ---------- a slide, scaled into a frame ---------- */
+
+.slide-frame {
+  position: relative;
+  width: calc(1920px * var(--slide-scale));
+  height: calc(1080px * var(--slide-scale));
+  overflow: hidden;
+}
+.slide-scale {
+  width: 1920px;
+  height: 1080px;
+  transform: scale(var(--slide-scale));
+  transform-origin: 0 0;
+}
+.slide-frame .reveal, .slide-frame .slides { width: 1920px; height: 1080px; position: relative; }
+.slide-frame section { position: relative; width: 1920px; height: 1080px; display: block; }
+.slide-frame .slides { text-align: left; }
+
+/* ---------- title page ---------- */
+
+.title-page { display: flex; flex-direction: column; justify-content: center; height: 100%; }
+.tp-kind { text-transform: uppercase; letter-spacing: 0.15em; color: var(--accent-text); }
+.tp-lesson { font-weight: 400; color: var(--text-strong); margin: 0.3em 0 0.2em; }
+.tp-course { color: var(--text-dim); }
+.tp-bar { width: 3em; height: 0.25em; background: var(--accent); margin: 1.4em 0; }
+.tp-meta { display: grid; grid-template-columns: max-content 1fr; gap: 0.3em 1.5em; color: var(--text-dim); margin: 0; }
+.tp-meta dt { color: var(--text-dim); }
+.tp-meta dd { margin: 0; color: var(--text); }
+
+/* ---------- table of contents ---------- */
+
+.toc h1 { font-weight: 400; color: var(--text-strong); }
+.toc ol { list-style: none; padding: 0; margin: 0; }
+.toc a { display: flex; align-items: baseline; gap: 0.6em; color: var(--text); text-decoration: none; }
+.toc .toc-num { min-width: 2.2em; color: var(--text-dim); }
+.toc .toc-title { flex: 1; }
+.toc .toc-page { color: var(--text-dim); font-variant-numeric: tabular-nums; }
+.toc .toc-l1 { margin-top: 0.7em; }
+.toc .toc-l1 a { color: var(--text-strong); }
+.toc .toc-l2 { padding-left: 2.2em; font-size: 0.92em; }
+
+/* =========================================================
+   Slides PDF: 16:9 pages, one slide per page
+   ========================================================= */
+
+.print-slides { font-family: var(--font); }
+.print-slides .page {
+  width: 1920px; height: 1080px; position: relative; overflow: hidden;
+  break-after: page; box-sizing: border-box;
+}
+.print-slides .page:last-child { break-after: auto; }
+.print-slides .title-page { padding: 0 160px; font-size: 40px; }
+.print-slides .tp-lesson { font-size: 104px; }
+.print-slides .tp-course { font-size: 52px; }
+.print-slides .toc-page { padding: 100px 160px; font-size: 30px; }
+.print-slides .toc h1 { font-size: 72px; margin: 0 0 40px; }
+.print-slides .toc-grid {
+  display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: repeat(14, auto);
+  grid-auto-flow: column; column-gap: 120px; row-gap: 14px;
+}
+.print-slides .toc .toc-l1 { margin-top: 10px; }
+.print-slides .toc-cont { color: var(--text-dim); font-size: 0.6em; }
+.print-slides .slide-no {
+  position: absolute; left: 44px; bottom: 30px; font: 26px var(--font); color: var(--text-dim);
+}
+
+/* =========================================================
+   Reader PDF: A4 portrait, slide on top, reader text below
+   ========================================================= */
+
+.print-reader, .print-title { font-family: var(--font); font-size: 11pt; line-height: 1.55; color: var(--text); }
+.print-title .title-page { height: 250mm; font-size: 12pt; }
+.print-title .tp-lesson { font-size: 30pt; line-height: 1.15; }
+.print-title .tp-course { font-size: 15pt; }
+
+.print-reader .toc { break-after: page; }
+.print-reader .toc h1 { font-size: 22pt; margin: 0 0 8mm; }
+.print-reader .toc .toc-l1 { font-size: 12pt; }
+
+.print-reader h1, .print-reader h2, .print-reader h3, .print-reader h4 { font-weight: 400; color: var(--text-strong); }
+.chapter { break-before: page; }
+.chapter:first-of-type { break-before: auto; }
+.print-reader nav.toc + .chapter { break-before: page; }
+.chapter-title { font-size: 24pt; line-height: 1.2; margin: 0 0 6mm; }
+.chapter-title .ch-num {
+  display: block; font-size: 10pt; text-transform: uppercase; letter-spacing: 0.15em;
+  color: var(--accent-text); margin-bottom: 2mm;
+}
+.keypoints {
+  border-left: 3pt solid var(--accent); background: #fbf6ee; padding: 3mm 5mm; margin: 0 0 8mm;
+}
+.keypoints h4 { margin: 0 0 1mm; font-size: 9pt; text-transform: uppercase; letter-spacing: 0.12em; color: var(--accent-text); }
+.keypoints ul { margin: 0; padding-left: 5mm; }
+
+.reader-slide { margin: 0 0 9mm; }
+.rs-title { font-size: 12pt; margin: 0 0 2.5mm; break-after: avoid; }
+.rs-num { color: var(--text-dim); margin-right: 0.6em; font-variant-numeric: tabular-nums; }
+.reader-slide figure { margin: 0 0 4mm; break-inside: avoid; }
+.reader-slide .slide-frame { border: 0.5pt solid #cfcfcf; border-radius: 2pt; }
+.reader-text p { margin: 0 0 2.5mm; }
+.reader-text a, .appendix a { color: var(--accent-text); }
+.reader-text code { font-family: var(--mono); font-size: 0.9em; color: #6b3d00; }
+.reader-text pre { font-family: var(--mono); font-size: 8.5pt; }
+.reader-text .code { background: #f6f6f6; padding: 2mm 4mm; border-left: 2pt solid var(--accent); }
+
+.quiz { break-inside: avoid-page; border-top: 0.5pt solid #ddd; padding-top: 4mm; }
+.quiz h2 { font-size: 15pt; }
+.quiz .options { list-style: none; padding-left: 0; }
+.quiz .options li::before { content: "☐ "; color: var(--text-dim); }
+
+.appendix { break-before: page; }
+.appendix h1 { font-size: 22pt; }
+.appendix h3 { font-size: 12pt; margin: 6mm 0 2mm; }
+.sources li { margin-bottom: 2.5mm; word-break: break-all; }
+.sources .src-title { word-break: normal; color: var(--text-strong); }
