@@ -2,7 +2,7 @@ build/
 # build-output van de voorbeeldcursus wel in de repo (HTML + PDF), zonder cache
 !voorbeeld/build/
 voorbeeld/build/.cache/
-# video (~15 MB per les) voorlopig niet in git
+# video (~15 MB per les) niet in git
 voorbeeld/build/video/
 .venv/
 __pycache__/
