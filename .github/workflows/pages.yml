@@ -1,5 +1,5 @@
 # Publiceert de gebouwde voorbeeldcursus (voorbeeld/build/) op GitHub Pages.
-# Eenmalig instellen: Settings → Pages → Source: "GitHub Actions".
+# Vereist: Settings → Pages → Source: "GitHub Actions" (staat aan sinds 2026-10-06).
 name: Pages
 
 on:
