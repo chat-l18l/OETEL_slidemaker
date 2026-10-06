@@ -30,6 +30,17 @@ timebar: true
 wpm: {nl: 140, en: 150}          # spreeksnelheid voor tijdschatting
 lessons: [lessen/01-naam]        # optioneel; standaard alle mappen in lessen/
 author: Naam                     # optioneel; op de titelpagina van PDF's
+tts:                             # conceptvideo (slides video)
+  provider: elevenlabs
+  model: eleven_multilingual_v2
+  voice: {nl: <voice-id>, en: <voice-id>}
+  settings: {stability: 0.5, similarity_boost: 0.75, speed: 1.0}
+video:
+  fps: 30
+  lead: 0.3                      # stilte vóór elk scriptfragment (s)
+  tail: 0.6                      # stilte na elk scriptfragment (s)
+  preset: veryfast               # x264-preset; medium = kleiner bestand, trager
+  crf: 20
 pdf:                             # optioneel; alles staat standaard aan
   title_page: true
   toc: true
@@ -186,6 +197,39 @@ Vereist respectievelijk `mmdc`, `dot` of `d2` op het pad. Resultaat wordt gecach
 Beide gebruiken het printthema: wit papier, donkere tekst, diagrammen opnieuw gerenderd in lichte kleuren.
 De versie uit git/hg/svn komt op de titelpagina. Tekst met te weinig contrast geeft een waarschuwing.
 Een slide zonder kop krijgt in de inhoudsopgave de eerste tekstregel als titel.
+
+## Video
+
+`slides video [pad] [--lang nl] [--yes] [--silent] [--subs nl,en]` maakt per les en taal in `build/video/<taal>/`:
+
+- `<les>.mp4`: 1920×1080, één beeld per onthulstap. Het `@script`-fragment van die stap wordt ingesproken via TTS, en de tijdbalk per hoofdstuk loopt vloeiend mee.
+- `<les>.<taal>.srt` en `.vtt`: ondertitels. In de gesproken taal zijn ze exact getimed op de audio (per teken). Andere talen worden over dezelfde spreekmomenten verdeeld.
+- `<les>-chapters.txt`: YouTube-hoofdstukken (`00:00 Titel`), om in de videobeschrijving te plakken.
+
+Elke stap duurt `lead` + audio + `tail`. Een stap zonder script krijgt de geschatte duur.
+Audio wordt gecachet per fragment, dus na een wijziging wordt alleen het gewijzigde fragment opnieuw ingesproken.
+Vóór betaalde synthese toont de tool het aantal tekens en vraagt om bevestiging (`--yes` slaat dat over).
+`--silent` maakt een video zonder audio, met geschatte timing.
+
+De API-key staat in `ELEVENLABS_API_KEY`, of in `~/.config/slidesmith/secrets.env` (buiten de repo):
+
+```
+ELEVENLABS_API_KEY=sk_...
+```
+
+### Uitspraak: lexicon.yaml
+
+In de cursusroot. Het past alleen de gesproken tekst aan; de ondertitels tonen de geschreven tekst.
+
+```yaml
+nl:
+  ESP32: E S P tweeëndertig
+  USB: U S B
+en:
+  ESP32: E S P thirty-two
+```
+
+Termen worden als heel woord vervangen, hoofdlettergevoelig.
 
 ## Vertalingen
 

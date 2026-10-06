@@ -2,6 +2,9 @@
 (function () {
   "use strict";
   const D = window.DECK;
+  // ?video: frames for the rendered video (no transitions; ffmpeg draws the time bar)
+  const VIDEO = new URLSearchParams(location.search).has("video");
+  if (VIDEO) document.body.classList.add("video-mode");
 
   Reveal.initialize({
     width: 1920,
@@ -15,7 +18,7 @@
     controls: false,
     progress: false,
     slideNumber: false,
-    transition: "fade",
+    transition: VIDEO ? "none" : "fade",
     transitionSpeed: "fast",
     backgroundTransition: "none",
     plugins: [RevealNotes],
@@ -23,7 +26,7 @@
 
   // ---- time bar ------------------------------------------------------------
 
-  const bar = document.getElementById("timebar");
+  const bar = VIDEO ? null : document.getElementById("timebar");
   const segs = [];
   if (bar && D.total > 0) {
     for (const ch of D.chapters) {

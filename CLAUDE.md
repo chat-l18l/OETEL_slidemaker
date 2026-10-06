@@ -15,6 +15,8 @@ pixi run slides pdf voorbeeld
 - Python-pakket in `src/slidesmith/`; reveal.js, KaTeX en fonts staan gevendord in `static/vendor/` (offline).
 - Pipeline: `parser.py` (bron → model) → `build.py` (model → HTML via `templates/`) met `mdrender.py`, `boxes.py`, `callouts.py`, `diagrams.py`.
 - `pdf.py` rendert dezelfde slides in het printthema (`body.theme-print`) via `browser.py` (Playwright); de reader in twee passes voor paginanummers in de inhoudsopgave.
+- `video.py`: frames per stap (deck met `?video`), TTS via `tts.py` (cache in `build/.cache/tts`, gesleuteld op tekst+stem+model+instellingen), audiospoor, ffmpeg met tijdbalk via `overlay` (drawbox rekent niet per frame), SRT/VTT, YouTube-hoofdstukken.
+- Draai geen `slides video` zonder `--silent` als de gebruiker daar niet om vraagt: TTS kost tegoed.
 - Playwright is aan zijn thread gebonden: in `serve` lopen alle builds op één vaste worker-thread.
 - CLI-meldingen zijn Nederlands; code en commentaar Engels.
 

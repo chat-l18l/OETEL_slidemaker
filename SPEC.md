@@ -252,6 +252,7 @@ Fasering:
 - ~~Keuze bouwen vs. bestaand~~ → **akkoord**: eigen Python-tool met reveal.js als render-engine (zie [INVENTARISATIE.md](INVENTARISATIE.md)).
 - Fase 1 gereed (live presentatie, thema, stappen, tijdbalk, `serve`/`check`/`stamp`).
 - Installatie via **pixi** (`pyproject.toml` + `pixi.lock`): Python, ffmpeg, Graphviz, D2, Playwright; Chromium via `pixi run setup`. Mermaid rendert via Playwright (geen Node.js nodig).
+- Fase 3 gereed (`slides video`: ElevenLabs-TTS met cache en kostenbevestiging, uitspraak-lexicon, frames per stap, vloeiende tijdbalk, SRT/VTT per taal, YouTube-hoofdstukken). **Open:** eigen gekloonde stem — nu voice-ID `jfwdd64Nlhnj6vcFqRHZ` (nog te bevestigen of dit de eigen kloon is); API-key mist `voices_read`/`user_read` (geen tegoed-weergave).
 - Fase 2 gereed (`slides pdf`: slides- en reader-PDF, printthema, inhoudsopgave met paginanummers, bladwijzers, kernpunten, quiz + antwoorden, bronnen, VCS-versie, contrastcontrole).
 
 - ~~Syntax bronformaat~~ → **akkoord** op v0 (Bijlage A): `@`-directieven, NL/EN per slide onder elkaar, eigen `boxes`-diagramnotatie.

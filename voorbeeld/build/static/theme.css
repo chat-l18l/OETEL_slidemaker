@@ -255,6 +255,10 @@ body.theme-dark {
   font: 18px var(--font);
 }
 
+.video-mode #timebar { display: none; }
+.video-mode .reveal .slides section .fragment,
+.video-mode .reveal .code-wrap .code pre span[id] { transition: none !important; }
+
 #build-error {
   position: fixed; inset: 20px 20px auto 20px; z-index: 100;
   background: #5c1010; color: #fff; border: 2px solid #ff6b6b; border-radius: 8px;

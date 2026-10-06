@@ -75,6 +75,36 @@ def cmd_pdf(args) -> int:
     return 0
 
 
+def cmd_video(args) -> int:
+    from .video import build_lesson_video
+
+    def confirm(chars: int, quota: tuple[int, int] | None) -> bool:
+        left = f"; tegoed nog {quota[1] - quota[0]:,} van {quota[1]:,}" if quota else ""
+        print(f"TTS: {chars:,} tekens te synthetiseren{left}".replace(",", "."), file=sys.stderr)
+        if args.yes:
+            return True
+        if not sys.stdin.isatty():
+            print("geen terminal om te bevestigen; gebruik --yes", file=sys.stderr)
+            return False
+        return input("doorgaan? [j/N] ").strip().lower() in ("j", "ja", "y", "yes")
+
+    diag = Diagnostics()
+    t0 = time.perf_counter()
+    course = _load(args.path, diag)
+    out = (args.out or course.root / "build").resolve()
+    subs = args.subs.split(",") if args.subs else None
+    written = []
+    for lang in _langs(args.lang, course):
+        for lesson in course.lessons:
+            written += build_lesson_video(course, lesson, lang, out, diag, confirm,
+                                          silent=args.silent, sub_langs=subs)
+    _print_warnings(diag)
+    for p in written:
+        print(_color(DIM, "  geschreven ") + str(p.relative_to(out.parent)))
+    print(f"klaar in {time.perf_counter() - t0:.1f}s")
+    return 0
+
+
 def cmd_check(args) -> int:
     diag = Diagnostics()
     course = _load(args.path, diag)
@@ -153,6 +183,13 @@ def main(argv: list[str] | None = None) -> int:
     common(sp)
     sp.add_argument("--kind", default="slides,reader", help="slides, reader of beide (standaard)")
     sp.set_defaults(func=cmd_pdf)
+
+    sp = sub.add_parser("video", help="conceptvideo met TTS-stem, ondertitels en YouTube-hoofdstukken")
+    common(sp)
+    sp.add_argument("--yes", action="store_true", help="niet vragen vóór betaalde TTS-synthese")
+    sp.add_argument("--silent", action="store_true", help="zonder TTS: geschatte timing, geen audio")
+    sp.add_argument("--subs", help="talen voor ondertitels, kommagescheiden (standaard: alle)")
+    sp.set_defaults(func=cmd_video)
 
     sp = sub.add_parser("serve", help="bouw, serveer en herlaad automatisch bij wijzigingen")
     common(sp)

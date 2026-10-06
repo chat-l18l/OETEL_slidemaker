@@ -1,7 +1,7 @@
 # slidesmith
 
 Educatieve presentaties als code: tekstbestanden in versiebeheer → presentatie in de browser
-en PDF's (in volgende fases ook TTS-video, ondertitels en een OBS-koppeling).
+PDF's en een conceptvideo met TTS-stem, ondertitels en YouTube-hoofdstukken (later ook een OBS-koppeling).
 
 - Geen WYSIWYG: Markdown met `@`-directieven, leesbare diffs, door AI te bewerken
 - NL en EN in hetzelfde bestand, met detectie van verouderde vertalingen
@@ -28,6 +28,13 @@ Daarna: `pixi run slides …`, of `pixi shell` en dan gewoon `slides …`.
 Zonder pixi kan het ook met `pip install -e .` plus `playwright install chromium-headless-shell`.
 Graphviz, D2 en ffmpeg moet je dan zelf installeren.
 
+Voor de video met spraak is een ElevenLabs-API-key nodig, buiten de repo:
+
+```bash
+mkdir -p ~/.config/slidesmith && echo 'ELEVENLABS_API_KEY=sk_...' > ~/.config/slidesmith/secrets.env
+chmod 600 ~/.config/slidesmith/secrets.env
+```
+
 ## Snel starten
 
 ```bash
@@ -44,6 +51,7 @@ Toetsen: pijltjes of spatie = volgende stap, `S` = sprekersnotities, `Esc` = ove
 | `slides build [pad] [--lang nl,en]` | HTML bouwen naar `<cursus>/build/` |
 | `slides serve [pad] [--port 8000]` | bouwen, serveren, live herladen |
 | `slides pdf [pad] [--kind slides,reader]` | PDF's in printthema naar `<cursus>/build/pdf/<taal>/` |
+| `slides video [pad] [--lang nl] [--yes]` | conceptvideo (mp4) met TTS, ondertitels en YouTube-hoofdstukken |
 | `slides check [pad] [--strict]` | bron, verwijzingen, stappen en vertalingen controleren |
 | `slides stamp [pad] [--id slide]` | vertalingen markeren als bijgewerkt |
 

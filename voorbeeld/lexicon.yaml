@@ -1,0 +1,7 @@
+# Uitspraak voor de TTS-stem: alleen de gesproken tekst verandert, ondertitels tonen het origineel.
+nl:
+  ESP32: E S P tweeëndertig
+  esptool: E S P tool
+  USB: U S B
+en:
+  ESP32: E S P thirty-two
