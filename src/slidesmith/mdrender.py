@@ -181,5 +181,6 @@ def render_plain(text: str, ctx: Ctx, env: dict) -> str:
     return render_markdown(text, ctx, env, steps=False)
 
 
-def pygments_css(style: str = "github-dark") -> str:
-    return HtmlFormatter(style=style).get_style_defs(".code")
+def pygments_css() -> str:
+    return (HtmlFormatter(style="github-dark").get_style_defs(".theme-dark .code") + "\n"
+            + HtmlFormatter(style="default").get_style_defs(".theme-print .code"))

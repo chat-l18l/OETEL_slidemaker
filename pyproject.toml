@@ -17,6 +17,8 @@ dependencies = [
     "jinja2>=3.1",
     "pillow>=10",
     "websockets>=13",
+    "playwright>=1.45",
+    "pypdf>=4",
 ]
 
 [project.optional-dependencies]
@@ -33,3 +35,37 @@ slidesmith = ["static/**/*", "templates/*"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
+pythonpath = ["tests"]
+
+# ---------------------------------------------------------------------------
+# pixi: reproducible environment including the non-Python tools.
+#   pixi install          -> environment from pixi.lock
+#   pixi run setup        -> download the matching headless Chromium
+#   pixi run slides ...   -> run the CLI
+# ---------------------------------------------------------------------------
+
+[tool.pixi.workspace]
+channels = ["conda-forge"]
+platforms = ["linux-64", "linux-aarch64", "osx-64", "osx-arm64", "win-64"]
+
+[tool.pixi.dependencies]
+python = "3.12.*"
+ffmpeg = ">=7"
+graphviz = ">=12"
+d2 = ">=0.7"
+playwright = ">=1.45"
+
+[tool.pixi.pypi-dependencies]
+slidesmith = { path = ".", editable = true }
+
+[tool.pixi.feature.dev.dependencies]
+pytest = ">=8"
+
+[tool.pixi.environments]
+default = { features = ["dev"], solve-group = "default" }
+
+[tool.pixi.tasks]
+setup = { cmd = "playwright install chromium-headless-shell", description = "Download headless Chromium voor PDF/video/Mermaid" }
+test = { cmd = "pytest -q", description = "Draai de tests" }
+check = { cmd = "slides check voorbeeld", description = "Controleer de voorbeeldcursus" }
+serve = { cmd = "slides serve voorbeeld", description = "Serveer de voorbeeldcursus met live reload" }

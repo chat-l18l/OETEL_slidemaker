@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import asyncio
+import concurrent.futures
 import functools
 import http.server
 import json
@@ -51,7 +52,7 @@ def _start_http(root: Path, host: str, port: int) -> http.server.ThreadingHTTPSe
 
 
 async def _serve(watch_dir: Path, out: Path, host: str, port: int,
-                 rebuild: Callable[[], str | None]) -> None:
+                 rebuild: Callable[[], str | None], worker: concurrent.futures.Executor) -> None:
     clients = set()
     last_error: str | None = None
 
@@ -64,6 +65,8 @@ async def _serve(watch_dir: Path, out: Path, host: str, port: int,
         finally:
             clients.discard(ws)
 
+    loop = asyncio.get_running_loop()
+
     async with serve(handler, host, port + 1):
         seen = fingerprint(watch_dir, out)
         while True:
@@ -72,17 +75,24 @@ async def _serve(watch_dir: Path, out: Path, host: str, port: int,
             if now == seen:
                 continue
             seen = now
-            last_error = await asyncio.to_thread(rebuild)
+            last_error = await loop.run_in_executor(worker, rebuild)
             if last_error:
                 broadcast(clients, json.dumps({"type": "error", "text": last_error}))
             else:
                 broadcast(clients, json.dumps({"type": "reload"}))
 
 
-def run(watch_dir: Path, out: Path, host: str, port: int, rebuild: Callable[[], str | None]) -> None:
+def make_worker() -> concurrent.futures.ThreadPoolExecutor:
+    """All builds run on one fixed thread: Playwright (Mermaid) is bound to its thread
+    and must stay off the thread that runs the asyncio loop."""
+    return concurrent.futures.ThreadPoolExecutor(max_workers=1)
+
+
+def run(watch_dir: Path, out: Path, host: str, port: int, rebuild: Callable[[], str | None],
+        worker: concurrent.futures.Executor) -> None:
     httpd = _start_http(out, host, port)
     try:
-        asyncio.run(_serve(watch_dir.resolve(), out.resolve(), host, port, rebuild))
+        asyncio.run(_serve(watch_dir.resolve(), out.resolve(), host, port, rebuild, worker))
     except KeyboardInterrupt:
         pass
     finally:

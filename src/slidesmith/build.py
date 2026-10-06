@@ -78,7 +78,7 @@ def _notes_html(slide: Slide, lang: str, ctx: Ctx, env: dict) -> str:
 
 
 def render_slide(slide: Slide, lang: str, course: Course, assets: Assets, cache: Path,
-                 diag: Diagnostics) -> RenderedSlide:
+                 diag: Diagnostics, theme: str = "dark") -> RenderedSlide:
     b = slide.block(lang)
     assets.loc = slide.loc
     base = (b.loc.file.parent if b.loc else slide.loc.file.parent)
@@ -99,7 +99,7 @@ def render_slide(slide: Slide, lang: str, course: Course, assets: Assets, cache:
             visual = boxes.render(parsed, labels, ctx.uid)
             max_visual = boxes.max_step(parsed)
         else:
-            visual = diagrams.render_external(d, cache / "diagrams")
+            visual = diagrams.render_external(d, cache / "diagrams", theme)
     if slide.image:
         url = assets.url(slide.image.path)
         if slide.callouts and slide.image.path.exists():

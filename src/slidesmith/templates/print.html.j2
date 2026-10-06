@@ -1,0 +1,123 @@
+{% import "_slide.html.j2" as slide %}<!doctype html>
+<html lang="{{ lang }}">
+<head>
+<meta charset="utf-8">
+<title>{{ doc_title }}</title>
+<link rel="stylesheet" href="{{ static }}/vendor/katex/katex.min.css">
+<link rel="stylesheet" href="{{ static }}/pygments.css">
+<link rel="stylesheet" href="{{ static }}/theme.css">
+<link rel="stylesheet" href="{{ static }}/print.css">
+<style>
+:root { --accent: {{ accent }}; --slide-scale: {{ scale }}; }
+@page { size: {{ page_size }}; margin: {{ page_margin }}; }
+</style>
+</head>
+<body class="theme-print print-{{ mode }}">
+
+{% macro framed(s) -%}
+<div class="slide-frame"><div class="slide-scale"><div class="reveal"><div class="slides">
+{% call slide.section(s.rs, logo_position) %}{% endcall %}
+</div></div></div></div>
+{%- endmacro %}
+
+{% macro title_page(subtitle) -%}
+<div class="title-page">
+  <div class="tp-kind">{{ subtitle }}</div>
+  <h1 class="tp-lesson">{{ lesson_title }}</h1>
+  <div class="tp-course">{{ course_title }}</div>
+  <div class="tp-bar"></div>
+  <dl class="tp-meta">
+    {% if author %}<dt>{{ S.author }}</dt><dd>{{ author }}</dd>{% endif %}
+    <dt>{{ S.version }}</dt><dd>{{ version }}</dd>
+    <dt>{{ S.generated }}</dt><dd>{{ today }}</dd>
+    <dt>{{ S.language }}</dt><dd>{{ lang | upper }}</dd>
+  </dl>
+</div>
+{%- endmacro %}
+
+{% macro toc_list(label_kind) -%}
+<nav class="toc">
+<h1>{{ S.contents }}</h1>
+<ol>
+{% for e in toc %}
+<li class="toc-l{{ e.level }}"><a href="#{{ e.anchor }}"><span class="toc-num">{{ e.number }}</span><span class="toc-title">{{ e.title }}</span><span class="toc-page">{{ e.page }}</span></a></li>
+{% endfor %}
+</ol>
+</nav>
+{%- endmacro %}
+
+{% if mode == "title" %}
+{{ title_page(S.reader) }}
+
+{% elif mode == "slides" %}
+{% if opts.title_page %}<div class="page">{{ title_page(S.slides) }}</div>{% endif %}
+{% if opts.toc %}{% for chunk in toc | batch(toc_per_page) %}
+<div class="page toc-page"><nav class="toc">
+<h1>{{ S.contents }}{% if loop.length > 1 %} <span class="toc-cont">({{ loop.index }}/{{ loop.length }})</span>{% endif %}</h1>
+<ol class="toc-grid">
+{% for e in chunk %}<li class="toc-l{{ e.level }}"><a href="#{{ e.anchor }}"><span class="toc-num">{{ e.number }}</span><span class="toc-title">{{ e.title }}</span></a></li>
+{% endfor %}
+</ol></nav></div>
+{% endfor %}{% endif %}
+{% for ch in chapters %}
+{% for s in ch.slides %}
+<div class="page slide-page" id="{{ s.anchor }}">
+{{ framed(s) }}
+{% if opts.page_numbers %}<div class="slide-no">{{ s.number }}</div>{% endif %}
+</div>
+{% endfor %}
+{% endfor %}
+
+{% else %}
+{% if opts.toc %}{{ toc_list("page") }}{% endif %}
+{% for ch in chapters %}
+<article class="chapter">
+<h1 id="{{ ch.anchor }}" class="chapter-title"><span class="ch-num">{{ S.chapter }} {{ ch.number }}</span>{{ ch.title }}</h1>
+{% if ch.keypoints %}
+<aside class="keypoints"><h4>{{ S.keypoints }}</h4><ul>{% for kp in ch.keypoints %}<li>{{ kp }}</li>{% endfor %}</ul></aside>
+{% endif %}
+{% for s in ch.slides %}
+<section class="reader-slide">
+<h3 id="{{ s.anchor }}" class="rs-title"><span class="rs-num">{{ s.number }}</span>{{ s.title }}</h3>
+<figure>{{ framed(s) }}</figure>
+{% if s.reader %}<div class="reader-text">{{ s.reader }}</div>{% endif %}
+</section>
+{% endfor %}
+{% if ch.quiz and opts.quiz %}
+<section class="quiz">
+<h2 id="{{ ch.anchor }}-quiz">{{ S.questions }}</h2>
+<ol>
+{% for q in ch.quiz %}
+<li><p>{{ q.text }}</p>{% if q.options %}<ul class="options">{% for o in q.options %}<li>{{ o.text }}</li>{% endfor %}</ul>{% endif %}</li>
+{% endfor %}
+</ol>
+</section>
+{% endif %}
+</article>
+{% endfor %}
+
+{% if answers and opts.quiz %}
+<article class="appendix">
+<h1 id="answers">{{ S.answers }}</h1>
+{% for ch in answers %}
+<h3>{{ S.chapter }} {{ ch.number }} — {{ ch.title }}</h3>
+<ol>{% for a in ch["items"] %}<li>{{ a }}</li>{% endfor %}</ol>
+{% endfor %}
+</article>
+{% endif %}
+
+{% if sources and opts.sources %}
+<article class="appendix">
+<h1 id="sources">{{ S.sources }}</h1>
+<ol class="sources">
+{% for src in sources %}<li><span class="src-title">{{ src.title }}</span><br><a href="{{ src.url }}">{{ src.url }}</a></li>{% endfor %}
+</ol>
+</article>
+{% endif %}
+{% endif %}
+
+<script src="{{ static }}/vendor/katex/katex.min.js"></script>
+<script src="{{ static }}/vendor/katex/auto-render.min.js"></script>
+<script src="{{ static }}/print.js"></script>
+</body>
+</html>

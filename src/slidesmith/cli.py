@@ -56,6 +56,25 @@ def cmd_build(args) -> int:
     return 0
 
 
+def cmd_pdf(args) -> int:
+    from .pdf import build_pdfs
+
+    diag = Diagnostics()
+    t0 = time.perf_counter()
+    course = _load(args.path, diag)
+    out = (args.out or course.root / "build").resolve()
+    kinds = args.kind.split(",")
+    for k in kinds:
+        if k not in ("slides", "reader"):
+            raise SourceError(f"onbekend PDF-soort '{k}' (slides, reader)")
+    written = build_pdfs(course, out, _langs(args.lang, course), kinds, diag)
+    _print_warnings(diag)
+    for p in written:
+        print(_color(DIM, "  geschreven ") + str(p.relative_to(out.parent)))
+    print(f"klaar in {time.perf_counter() - t0:.1f}s")
+    return 0
+
+
 def cmd_check(args) -> int:
     diag = Diagnostics()
     course = _load(args.path, diag)
@@ -101,7 +120,8 @@ def cmd_serve(args) -> int:
         print(_color(DIM, f"herbouwd in {time.perf_counter() - t0:.2f}s"))
         return None
 
-    err = rebuild()
+    worker = server.make_worker()
+    err = worker.submit(rebuild).result()
     course = load_course(course_root)
     lang = (args.lang or course.langs[0]).split(",")[0]
     print(f"\nserveer {out}")
@@ -111,7 +131,7 @@ def cmd_serve(args) -> int:
     print("  (S = sprekersnotities, Esc = overzicht, Ctrl+C = stoppen)")
     if err:
         print(_color(RED, "let op: eerste build faalde; pas de bron aan, de pagina herlaadt vanzelf"))
-    server.run(course_root, out, args.host, args.port, rebuild)
+    server.run(course_root, out, args.host, args.port, rebuild, worker)
     return 0
 
 
@@ -128,6 +148,11 @@ def main(argv: list[str] | None = None) -> int:
     sp = sub.add_parser("build", help="bouw HTML-presentaties")
     common(sp)
     sp.set_defaults(func=cmd_build)
+
+    sp = sub.add_parser("pdf", help="bouw PDF's (slides en/of reader) in het printthema")
+    common(sp)
+    sp.add_argument("--kind", default="slides,reader", help="slides, reader of beide (standaard)")
+    sp.set_defaults(func=cmd_pdf)
 
     sp = sub.add_parser("serve", help="bouw, serveer en herlaad automatisch bij wijzigingen")
     common(sp)

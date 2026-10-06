@@ -1,4 +1,4 @@
-<!doctype html>
+{% import "_slide.html.j2" as slide %}<!doctype html>
 <html lang="{{ lang }}">
 <head>
 <meta charset="utf-8">
@@ -14,14 +14,7 @@
 <div class="reveal">
 <div class="slides">
 {% for s in slides %}
-<section id="{{ s.anchor }}" class="layout-{{ s.layout }}{% for c in s.classes %} {{ c }}{% endfor %}" data-slide-id="{{ s.id }}">
-<div class="slide-inner">
-{% if s.body %}<div class="body">{{ s.body }}</div>{% endif %}
-{% if s.visual %}<div class="visual">{{ s.visual }}</div>{% endif %}
-</div>
-{% if s.logo %}<img class="logo logo-{{ logo_position }}" src="{{ s.logo }}" alt="">{% endif %}
-{% if s.notes %}<aside class="notes">{{ s.notes }}</aside>{% endif %}
-</section>
+{% call slide.section(s, logo_position) %}{% if s.notes %}<aside class="notes">{{ s.notes }}</aside>{% endif %}{% endcall %}
 {% endfor %}
 </div>
 </div>

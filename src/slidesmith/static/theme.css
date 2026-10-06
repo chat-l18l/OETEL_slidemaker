@@ -26,6 +26,7 @@
 :root {
   --accent: #F0A030;
   --accent-dark: #b8761a;
+  --accent-text: var(--accent);  /* accent used for text; darker in print for contrast */
   --bg: #2b2e33;
   --text: #e6e6e6;
   --text-strong: #ffffff;
@@ -100,9 +101,9 @@ body.theme-dark {
 .reveal p, .reveal li, .reveal td, .reveal th { font-size: 50px; line-height: 1.45; }
 .reveal p { margin: 0 0 0.6em; }
 .reveal strong { color: var(--text-strong); font-weight: 400; }
-.reveal em { color: var(--accent); font-style: normal; }
-.reveal a { color: var(--accent); text-decoration: none; }
-.reveal code { font-family: var(--mono); font-size: 0.85em; color: var(--accent); }
+.reveal em { color: var(--accent-text); font-style: normal; }
+.reveal a { color: var(--accent-text); text-decoration: none; }
+.reveal code { font-family: var(--mono); font-size: 0.85em; color: var(--accent-text); }
 
 .reveal ul, .reveal ol { margin: 0; padding-left: 1.1em; }
 .reveal li { margin: 0 0 0.32em; padding-left: 0.3em; }
@@ -160,7 +161,7 @@ body.theme-dark {
   white-space: pre;
   overflow: hidden;
 }
-.reveal .code pre code { font-size: inherit; color: #e6e6e6; }
+.reveal .code pre code { font-size: inherit; color: var(--code-text, #e6e6e6); }
 .reveal .code-wrap .code pre span[id] { transition: opacity 0.25s; }
 .reveal .code-wrap.focus .code pre span[id] { opacity: 0.3; }
 .reveal .code-wrap.focus .code pre span[id].hl { opacity: 1; }
@@ -272,3 +273,33 @@ body.theme-dark {
 .course-index .lessons > li { font-size: 26px; margin: 28px 0; }
 .course-index .lessons a { color: var(--accent); text-decoration: none; }
 .course-index .chapters li { font-size: 18px; color: var(--text-dim); margin: 4px 0; }
+
+/* ======================================================================
+   Print theme (PDF): white paper, dark text, accent kept, little ink.
+   ====================================================================== */
+
+body.theme-print {
+  --bg: #ffffff;
+  --text: #222222;
+  --text-strong: #111111;
+  --text-dim: #555555;
+  --accent-text: #A35F00;
+  --label-bg: rgba(255, 255, 255, 0.94);
+  --code-text: #1f1f1f;
+  background: #ffffff;
+  color: var(--text);
+}
+.theme-print .reveal h2 { background: none; color: var(--text-strong); }
+.theme-print .reveal li::marker { color: var(--accent); }
+.theme-print .reveal td { border-bottom-color: #d9d9d9; }
+.theme-print .reveal .code { background: #f6f6f6; }
+.theme-print .bx-fill { fill: #FCE3BD; stroke: #D88A1C; }
+.theme-print .bx-outline { fill: #ffffff; }
+.theme-print .bx-text-fill { fill: #1a1a1a; }
+.theme-print .bx-text-outline { fill: #A35F00; }
+.theme-print .bx-box { filter: none; }
+.theme-print .co-label { fill: #111111; }
+.theme-print .callout-stage > img { box-shadow: 0 0 0 1px #ddd; }
+/* final state: everything revealed, no code-step dimming */
+.theme-print .fragment { opacity: 1 !important; visibility: visible !important; }
+.theme-print .code-wrap.focus .code pre span[id] { opacity: 1; }

@@ -1,0 +1,10 @@
+{% macro section(s, logo_position) -%}
+<section id="{{ s.anchor }}" class="layout-{{ s.layout }}{% for c in s.classes %} {{ c }}{% endfor %}" data-slide-id="{{ s.id }}">
+<div class="slide-inner">
+{% if s.body %}<div class="body">{{ s.body }}</div>{% endif %}
+{% if s.visual %}<div class="visual">{{ s.visual }}</div>{% endif %}
+</div>
+{% if s.logo %}<img class="logo logo-{{ logo_position }}" src="{{ s.logo }}" alt="">{% endif %}
+{{ caller() if caller else "" }}
+</section>
+{%- endmacro %}

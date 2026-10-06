@@ -29,6 +29,13 @@ logo_position: bottom-right      # bottom-right | bottom-left | top-right | top-
 timebar: true
 wpm: {nl: 140, en: 150}          # spreeksnelheid voor tijdschatting
 lessons: [lessen/01-naam]        # optioneel; standaard alle mappen in lessen/
+author: Naam                     # optioneel; op de titelpagina van PDF's
+pdf:                             # optioneel; alles staat standaard aan
+  title_page: true
+  toc: true
+  page_numbers: true
+  sources: true                  # bronnenlijst uit links in reader- en slidetekst
+  quiz: true                     # vragen per hoofdstuk + antwoorden in bijlage (reader)
 ```
 
 `lesson.yaml`:
@@ -168,6 +175,17 @@ Vereist respectievelijk `mmdc`, `dot` of `d2` op het pad. Resultaat wordt gecach
 ## Includes
 
 `@include @shared/slides/outro.md` voegt alle slides uit dat bestand op die plek in.
+
+## PDF
+
+`slides pdf` maakt per les en taal:
+
+- `<les>-slides.pdf`: 16:9, één slide per pagina in de eindstand (alle stappen zichtbaar), met titelpagina en inhoudsopgave.
+- `<les>-reader.pdf`: A4, per slide de slide met daaronder de `@reader`-tekst. Per hoofdstuk staan de kernpunten bovenaan en de quizvragen onderaan. Achterin: antwoorden en bronnen.
+
+Beide gebruiken het printthema: wit papier, donkere tekst, diagrammen opnieuw gerenderd in lichte kleuren.
+De versie uit git/hg/svn komt op de titelpagina. Tekst met te weinig contrast geeft een waarschuwing.
+Een slide zonder kop krijgt in de inhoudsopgave de eerste tekstregel als titel.
 
 ## Vertalingen
 

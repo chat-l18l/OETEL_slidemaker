@@ -6,14 +6,16 @@ Specificatie: `SPEC.md`. Bronformaat: `docs/FORMAAT.md` — lees dit vóór je s
 ## Ontwikkelen
 
 ```bash
-python3 -m venv .venv && .venv/bin/pip install -e '.[dev]'
-.venv/bin/pytest -q
-.venv/bin/slides check voorbeeld
-.venv/bin/slides serve voorbeeld
+pixi install && pixi run setup     # omgeving + headless Chromium
+pixi run test
+pixi run slides check voorbeeld
+pixi run slides pdf voorbeeld
 ```
 
 - Python-pakket in `src/slidesmith/`; reveal.js, KaTeX en fonts staan gevendord in `static/vendor/` (offline).
 - Pipeline: `parser.py` (bron → model) → `build.py` (model → HTML via `templates/`) met `mdrender.py`, `boxes.py`, `callouts.py`, `diagrams.py`.
+- `pdf.py` rendert dezelfde slides in het printthema (`body.theme-print`) via `browser.py` (Playwright); de reader in twee passes voor paginanummers in de inhoudsopgave.
+- Playwright is aan zijn thread gebonden: in `serve` lopen alle builds op één vaste worker-thread.
 - CLI-meldingen zijn Nederlands; code en commentaar Engels.
 
 ## Slides bewerken
