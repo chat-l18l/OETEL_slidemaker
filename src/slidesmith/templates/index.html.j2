@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="{{ lang }}">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{{ title }}</title>
+<link rel="stylesheet" href="{{ static }}/theme.css">
+<style>:root { --accent: {{ accent }}; }</style>
+</head>
+<body class="theme-dark course-index">
+<main>
+<h1>{{ title }}</h1>
+<nav class="langs">{% for l in langs %}<a href="../{{ l }}/index.html"{% if l == lang %} aria-current="page"{% endif %}>{{ l | upper }}</a>{% endfor %}</nav>
+<ol class="lessons">
+{% for lesson in lessons %}
+<li><a href="{{ lesson.href }}">{{ lesson.title }}</a>
+<ol class="chapters">{% for ch in lesson.chapters %}<li>{{ ch }}</li>{% endfor %}</ol>
+</li>
+{% endfor %}
+</ol>
+</main>
+</body>
+</html>

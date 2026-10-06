@@ -1,0 +1,7 @@
+id: les01
+title:
+  nl: Les 1 — De werkbank als testlab
+  en: Lesson 1 — The workbench as a test lab
+chapters:
+  - 01-intro.md
+  - 02-werkwijze.md

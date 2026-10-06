@@ -249,7 +249,8 @@ Fasering:
 
 ## 17. Open vragen
 
-- Keuze bouwen vs. bestaand: zie [INVENTARISATIE.md](INVENTARISATIE.md) — advies: eigen Python-tool met reveal.js als render-engine. Wacht op akkoord.
+- ~~Keuze bouwen vs. bestaand~~ → **akkoord**: eigen Python-tool met reveal.js als render-engine (zie [INVENTARISATIE.md](INVENTARISATIE.md)).
+- Fase 1 gereed (live presentatie, thema, stappen, tijdbalk, `serve`/`check`/`stamp`).
 
 - ~~Syntax bronformaat~~ → **akkoord** op v0 (Bijlage A): `@`-directieven, NL/EN per slide onder elkaar, eigen `boxes`-diagramnotatie.
 
@@ -318,10 +319,10 @@ Hier even demonstreren met de echte opstelling.
 ...
 
 
-@slide cycle layout=diagram keypoints=cycle
+@slide cycle layout=diagram keypoints=cycle title=top-right
 
 @diagram boxes
-grid: 4x4
+grid 4x4
 box repo   "Stap 1 - Repo"      at 0,0   step=1
 box idea   "Stap 2 - Idee"      at 1,0   step=2
 box fsd    "Stap 3 - FSD"       at 2,1   step=3
@@ -329,14 +330,15 @@ box fsd    "Stap 3 - FSD"       at 2,1   step=3
 arrow repo -> idea  step=2
 arrow idea -> fsd   step=3
 ...
-title "Ishikawa-cirkel" at top-right
 
 @nl
+## Ishikawa-cirkel
 @script
 ...
 
 @en src=19bd04
-labels: repo="Step 1 - Repo", idea="Step 2 - Idea", fsd="Step 3 - FSD"
+## Ishikawa Circle
+@labels repo="Step 1 - Repo" idea="Step 2 - Idea" fsd="Step 3 - FSD"
 @script
 ...
 
@@ -348,6 +350,7 @@ labels: repo="Step 1 - Repo", idea="Step 2 - Idea", fsd="Step 3 - FSD"
 @callout arrow  from 20%,80% to 35%,55% label="Reset-knop" label.en="Reset button" step=2
 
 @nl
+## Het bord
 @script
 ...
 
@@ -366,6 +369,8 @@ labels: repo="Step 1 - Repo", idea="Step 2 - Idea", fsd="Step 3 - FSD"
 - [ ] Read the serial log
 - [x] Physically replace the board
 ```
+
+De actuele, volledige referentie staat in [docs/FORMAAT.md](docs/FORMAAT.md) (o.a. `@col`, `steps=`, code-regelstappen, `@@`).
 
 Aandachtspunten in dit voorstel:
 - Diagram-structuur (posities, stappen) staat **eenmaal**; alleen labels zijn per taal.

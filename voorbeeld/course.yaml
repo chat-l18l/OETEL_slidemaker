@@ -1,0 +1,11 @@
+title:
+  nl: AI-agents op de werkbank
+  en: AI agents on the workbench
+langs: [nl, en]
+accent: "#F0A030"
+logo: shared/assets/logo.svg
+logo_position: bottom-right
+timebar: true
+wpm:
+  nl: 140
+  en: 150

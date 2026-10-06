@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="{{ lang }}">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{{ title }}</title>
+<link rel="stylesheet" href="{{ static }}/vendor/reveal/reveal.css">
+<link rel="stylesheet" href="{{ static }}/vendor/katex/katex.min.css">
+<link rel="stylesheet" href="{{ static }}/pygments.css">
+<link rel="stylesheet" href="{{ static }}/theme.css">
+<style>:root { --accent: {{ accent }}; }</style>
+</head>
+<body class="theme-dark">
+<div class="reveal">
+<div class="slides">
+{% for s in slides %}
+<section id="{{ s.anchor }}" class="layout-{{ s.layout }}{% for c in s.classes %} {{ c }}{% endfor %}" data-slide-id="{{ s.id }}">
+<div class="slide-inner">
+{% if s.body %}<div class="body">{{ s.body }}</div>{% endif %}
+{% if s.visual %}<div class="visual">{{ s.visual }}</div>{% endif %}
+</div>
+{% if s.logo %}<img class="logo logo-{{ logo_position }}" src="{{ s.logo }}" alt="">{% endif %}
+{% if s.notes %}<aside class="notes">{{ s.notes }}</aside>{% endif %}
+</section>
+{% endfor %}
+</div>
+</div>
+{% if timebar %}<div id="timebar" aria-hidden="true"></div>{% endif %}
+<div id="build-error" hidden></div>
+<script>
+window.DECK = {{ deck_json }};
+</script>
+<script src="{{ static }}/vendor/reveal/reveal.js"></script>
+<script src="{{ static }}/vendor/reveal/plugin/notes.js"></script>
+<script src="{{ static }}/vendor/katex/katex.min.js"></script>
+<script src="{{ static }}/vendor/katex/auto-render.min.js"></script>
+<script src="{{ static }}/slides.js"></script>
+</body>
+</html>
