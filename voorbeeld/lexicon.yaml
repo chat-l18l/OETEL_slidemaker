@@ -3,5 +3,8 @@ nl:
   ESP32: E S P tweeëndertig
   esptool: E S P tool
   USB: U S B
+  FSD: F S D
+  "115200": honderdvijftienduizend tweehonderd
 en:
   ESP32: E S P thirty-two
+  "115200": one hundred fifteen thousand two hundred

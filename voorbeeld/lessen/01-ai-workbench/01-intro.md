@@ -5,8 +5,8 @@ title:
   en: Introduction
 keypoints:
   agent-loop:
-    nl: Een AI-agent kan de volledige test-loop zelfstandig doorlopen.
-    en: An AI agent can run the full test loop on its own.
+    nl: Een AI-agent kan de volledige testcyclus zelfstandig doorlopen.
+    en: "An AI agent can run the entire test cycle on its own."
 ---
 
 @slide titel layout=title
@@ -16,13 +16,13 @@ keypoints:
 AI-agents die zelf flashen, meten en testen
 
 @script
-Welkom! Vandaag kijken we hoe je je elektronica-werkbank verandert in een geautomatiseerd testlab.
+Welkom! Vandaag kijken we hoe je je elektronicawerkbank verandert in een geautomatiseerd testlab.
 
 @reader
 In deze les bouwen we stap voor stap een opstelling waarin een AI-agent
 zelfstandig firmware kan flashen en testen.
 
-@en src=80ba591b
+@en src=32391766
 # The workbench as a test lab
 AI agents that flash, measure and test on their own
 
@@ -44,14 +44,14 @@ flash and test firmware on its own.
 - De resultaten valideren
 - Problemen in de code oplossen
 
-=> Workbench is een geautomatiseerd testlab
+=> Je werkbank wordt een geautomatiseerd testlab
 
 @script
 Wat kan zo'n agent nu eigenlijk allemaal?
 @step
 Om te beginnen flasht hij zelf de firmware naar het bord.
 @step
-Daarna leest hij mee op de seriële poort, net zoals jij dat zou doen.
+Daarna volgt hij de seriële log, net zoals jij dat zou doen.
 @step
 Hij draait de tests die we hebben voorbereid.
 @step
@@ -63,33 +63,33 @@ Kortom: je werkbank wordt een geautomatiseerd testlab.
 
 @reader
 De agent gebruikt hiervoor gewone command-line tools zoals `esptool` en een
-seriële monitor. Zie ook de [ESP-IDF documentatie](https://docs.espressif.com/).
+seriële monitor. Zie ook de [ESP-IDF-documentatie](https://docs.espressif.com/).
 
 @notes
 Hier even de echte opstelling laten zien.
 
-@en src=e204ef0c
+@en src=b088fb8b
 ## The AI agent can:
 - Flash firmware
 - Watch the serial log
 - Run tests
 - Validate the results
-- Fix problems in the code if needed
+- Fix problems in the code
 
-=> Workbench is an automated test lab
+=> Your workbench becomes an automated test lab
 
 @script
 So what can such an agent actually do?
 @step
 First of all, it flashes the firmware to the board by itself.
 @step
-Then it watches the serial port, just like you would.
+Then it watches the serial log, just like you would.
 @step
 It runs the tests we prepared.
 @step
 And it checks whether the results match what we expect.
 @step
-If something goes wrong, it fixes the code and starts over.
+If something goes wrong, it adjusts the code and starts over.
 @step
 In short: your workbench becomes an automated test lab.
 
@@ -118,11 +118,11 @@ The idea is simple: let the machine do the boring work, and keep the overview yo
 
 @quiz intro
 @question mc keypoint=agent-loop
-@nl Welke taak kan de agent NIET zelf uitvoeren?
-- [ ] Firmware flashen
-- [ ] De seriële log lezen
-- [x] Het bord fysiek vervangen
-@en src=b8d9dbf4 Which task can the agent NOT perform on its own?
-- [ ] Flash firmware
-- [ ] Read the serial log
-- [x] Physically replace the board
+@nl Wat doet de agent als een test faalt?
+- [ ] Hij stopt en wacht op de ontwikkelaar
+- [x] Hij past de code aan en begint opnieuw
+- [ ] Hij flasht dezelfde firmware nog een keer
+@en src=54b7098a What does the agent do when a test fails?
+- [ ] It stops and waits for the developer
+- [x] It adjusts the code and starts over
+- [ ] It flashes the same firmware again

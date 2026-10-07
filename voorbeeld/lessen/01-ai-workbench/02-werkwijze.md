@@ -8,8 +8,8 @@ keypoints:
     nl: Ontwikkelen is een cyclus, geen rechte lijn.
     en: Development is a cycle, not a straight line.
   hardware:
-    nl: Ken de aansluitingen van je bord.
-    en: Know the connections of your board.
+    nl: Ken de belangrijkste onderdelen van je bord.
+    en: "Know the main components of your board."
 ---
 
 @slide cycle layout=diagram keypoints=cycle title=top-right
@@ -43,22 +43,22 @@ We beginnen met een repository.
 @step
 Dan het idee.
 @step
-Dat werken we uit in een functioneel ontwerp.
+Dat werken we uit in een functioneel ontwerp: de FSD.
 @step
-Daarna de implementatie.
+Daarna bouwen we de opstelling: de implementatie.
 @step
-De code zelf.
+Dan schrijven we de code zelf.
 @step
 Flashen naar het bord.
 @step
 Testen.
 @step
-En met wat we leren verbeteren we het ontwerp — en de cirkel begint opnieuw.
+En met wat we leren verbeteren we het functioneel ontwerp, en vanaf daar begint de cirkel opnieuw.
 
-@en src=8a36e008
+@en src=ebb60a7a
 ## Ishikawa Circle
 
-@labels repo="Step 1 - Repo" idea="Step 2 - Idea" fsd="Step 3 - FSD" impl="Step 4 - Implement" code="Step 5 - Code" flash="Step 6 - Flash" test="Step 7 - Testing" enh="Step 8 - Enhance"
+@labels repo="Step 1 - Repo" idea="Step 2 - Idea" fsd="Step 3 - FSD" impl="Step 4 - Build" code="Step 5 - Code" flash="Step 6 - Flash" test="Step 7 - Testing" enh="Step 8 - Enhance"
 
 @script
 This is what the workflow looks like.
@@ -67,24 +67,24 @@ We start with a repository.
 @step
 Then the idea.
 @step
-We work that out in a functional design.
+We work that out in a functional design: the FSD.
 @step
-Then the implementation.
+Then we build the setup: the implementation.
 @step
-The code itself.
+Then we write the code itself.
 @step
 Flashing it to the board.
 @step
 Testing.
 @step
-And what we learn enhances the design — and the circle starts again.
+And what we learn enhances the functional design, and from there the circle starts again.
 
 
 @slide board layout=callouts keypoints=hardware
 
 @image assets/devboard.png
 @callout circle at 15.5%,49.5% r=6% label="USB-poort" label.en="USB port" step=1
-@callout arrow from 22%,88% to 30%,68% label="Reset-knop" label.en="Reset button" step=2
+@callout arrow from 22%,88% to 30%,68% label="Resetknop" label.en="Reset button" step=2
 @callout box at 43%,29% size=26%,28% label="ESP32-module" label.en="ESP32 module" step=3
 
 @nl
@@ -93,13 +93,13 @@ And what we learn enhances the design — and the circle starts again.
 @script
 Even kort de belangrijkste onderdelen van het bord.
 @step
-Links zit de USB-poort: hier gaat de voeding en de seriële verbinding doorheen.
+Links zit de USB-poort: hier gaan de voeding en de seriële verbinding doorheen.
 @step
-Dit is de reset-knop.
+Dit is de resetknop.
 @step
 En dit is het hart van het bord: de ESP32-module.
 
-@en src=e50ec65c
+@en src=f8d06373
 ## The board
 
 @script
@@ -116,23 +116,23 @@ And this is the heart of the board: the ESP32 module.
 
 @diagram mermaid
 flowchart LR
-  A[Code] --> B[Build]
-  B --> C[Flash]
+  A[Code] --> B[Compileren]
+  B --> C[Flashen]
   C --> D{Test OK?}
   D -- ja --> E[Klaar]
   D -- nee --> A
 
 @nl
-## De test-loop
+## De testcyclus
 
 @script
-Dezelfde loop, maar nu als stroomschema.
+Een deel van de cirkel, de testcyclus van code, compileren, flashen en testen, nu als stroomschema.
 
-@en src=08ec254b
-## The test loop
+@en src=88ede67d
+## The test cycle
 
 @script
-The same loop, but now as a flowchart.
+Part of the circle, the test cycle of code, compile, flash and test, now as a flowchart.
 
 
 @slide code-voorbeeld layout=code
@@ -142,10 +142,10 @@ The same loop, but now as a flowchart.
 
 ```python steps=1-2|4-6|8
 import serial
-port = serial.Serial("/dev/ttyUSB0", 115200)
+port = serial.Serial("/dev/ttyUSB0", 115200, timeout=10)
 
-def wacht_op(tekst, timeout=10):
-    regel = port.read_until(tekst.encode(), timeout)
+def wacht_op(tekst):
+    regel = port.read_until(tekst.encode())
     return tekst in regel.decode()
 
 assert wacht_op("BOOT OK")
@@ -160,15 +160,15 @@ Dan een hulpfunctie die wacht op een bepaalde tekst.
 @step
 En de test zelf: we verwachten dat het bord "BOOT OK" meldt.
 
-@en src=d4abab17
+@en src=6c7c7ee4
 ## A test in Python
 
 ```python steps=1-2|4-6|8
 import serial
-port = serial.Serial("/dev/ttyUSB0", 115200)
+port = serial.Serial("/dev/ttyUSB0", 115200, timeout=10)
 
-def wait_for(text, timeout=10):
-    line = port.read_until(text.encode(), timeout)
+def wait_for(text):
+    line = port.read_until(text.encode())
     return text in line.decode()
 
 assert wait_for("BOOT OK")
@@ -194,9 +194,9 @@ $$t_{byte} = \frac{10}{\text{baudrate}}$$
 Bij 115200 baud duurt één byte ongeveer $87\,\mu s$.
 
 @script
-Hoe lang duurt het versturen van één byte? Tien bits gedeeld door de baudrate.
+Hoe lang duurt het versturen van één byte? Een byte kost tien bits: acht databits, plus een startbit en een stopbit. Tien bits gedeeld door de baudrate geeft bij 115200 baud ongeveer zevenentachtig microseconden.
 
-@en src=8c8a4ee4
+@en src=22817035
 ## Baud rate and time
 
 $$t_{byte} = \frac{10}{\text{baud rate}}$$
@@ -204,7 +204,7 @@ $$t_{byte} = \frac{10}{\text{baud rate}}$$
 At 115200 baud, one byte takes about $87\,\mu s$.
 
 @script
-How long does sending one byte take? Ten bits divided by the baud rate.
+How long does sending one byte take? A byte costs ten bits: eight data bits, plus a start bit and a stop bit. Ten bits divided by the baud rate gives about eighty-seven microseconds at one hundred fifteen thousand two hundred baud.
 
 
 @slide vergelijking layout=table
@@ -277,3 +277,23 @@ And the test board itself.
 
 @include @shared/slides/outro.md
 
+
+@quiz werkwijze
+@question mc keypoint=cycle
+@nl Wat gebeurt er na stap 8, Verbeteren?
+- [ ] Het project is af
+- [x] De cirkel begint opnieuw bij het functioneel ontwerp
+- [ ] We beginnen opnieuw met een lege repository
+@en src=fab4f457 What happens after step 8, Improve?
+- [ ] The project is finished
+- [x] The circle starts again at the functional design
+- [ ] We start over with an empty repository
+@question mc keypoint=hardware
+@nl Via welk onderdeel lopen de voeding en de seriële verbinding?
+- [x] De USB-poort
+- [ ] De resetknop
+- [ ] De ESP32-module
+@en src=81c378f8 Which component carries the power supply and the serial connection?
+- [x] The USB port
+- [ ] The reset button
+- [ ] The ESP32 module
