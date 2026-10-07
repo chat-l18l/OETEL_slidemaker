@@ -236,3 +236,33 @@ Termen worden als heel woord vervangen, hoofdlettergevoelig.
 - `@en src=<hash>`: de hash van de NL-inhoud (plus visuals) waarop de vertaling gebaseerd is.
 - `slides check` meldt ontbrekende en verouderde vertalingen.
 - `slides stamp [pad] [--id slide]` zet de hash op de huidige NL-versie (na review van de vertaling).
+- `slides translate [pad] [--id slide] [--dry-run] [--force] [--yes]` laat Claude alles vertalen wat ontbreekt of verouderd is:
+  slides (inhoud, script, reader, notities, diagram- en callout-labels), hoofdstuktitels, keypoints en quizvragen.
+  - Een verouderde vertaling wordt bijgewerkt op basis van de vorige versie, zodat de diff klein blijft.
+  - Elk antwoord wordt gecontroleerd op dezelfde structuur als de NL-versie: lijstitems, `=>`-regels, `@col`, koppen,
+    tabelregels, codeblokken (aantal regels) en het aantal scriptfragmenten. Klopt het niet, dan volgt één nieuwe poging;
+    daarna wordt de slide overgeslagen met een waarschuwing.
+  - Daarna wordt `src=` bijgewerkt. Bekijk het resultaat met `git diff`.
+  - Instructies voor het model: `src/slidesmith/prompts/translate.md`.
+
+### glossary.yaml
+
+In de cursusroot. Gebruikt door `slides translate` (en later `slides review`):
+
+```yaml
+keep: [firmware, esptool, ESP32]      # niet vertalen
+terms:                                # zo vertalen
+  werkbank: workbench
+  flashen: flash
+```
+
+### Instellingen en API-key
+
+```yaml
+ai:                       # course.yaml, optioneel
+  model: claude-opus-5-5
+  effort: medium          # low | medium | high
+```
+
+In `~/.config/slidesmith/secrets.env`: `ANTHROPIC_API_KEY=...`. Is de key niet aan een workspace gekoppeld,
+dan ook `ANTHROPIC_WORKSPACE_ID=wrkspc_...`.

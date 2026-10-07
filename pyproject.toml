@@ -19,6 +19,7 @@ dependencies = [
     "websockets>=13",
     "playwright>=1.45",
     "pypdf>=4",
+    "anthropic>=0.70",
 ]
 
 [project.optional-dependencies]
@@ -31,7 +32,7 @@ slides = "slidesmith.cli:main"
 where = ["src"]
 
 [tool.setuptools.package-data]
-slidesmith = ["static/**/*", "templates/*"]
+slidesmith = ["static/**/*", "templates/*", "prompts/*"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

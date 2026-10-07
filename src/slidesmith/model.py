@@ -32,6 +32,7 @@ class LangBlock:
     src: str | None = None  # hash of the NL source this translation is based on
     raw: str = ""  # raw source text, used for hashing
     loc: Loc | None = None
+    end: int | None = None  # 1-based line where the next block starts (exclusive end)
 
 
 @dataclass
@@ -90,6 +91,7 @@ class QuizText:
     options: list[QuizOption] = field(default_factory=list)
     src: str | None = None
     loc: Loc | None = None
+    end: int | None = None  # 1-based exclusive end line
 
 
 @dataclass

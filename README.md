@@ -28,10 +28,10 @@ Daarna: `pixi run slides …`, of `pixi shell` en dan gewoon `slides …`.
 Zonder pixi kan het ook met `pip install -e .` plus `playwright install chromium-headless-shell`.
 Graphviz, D2 en ffmpeg moet je dan zelf installeren.
 
-Voor de video met spraak is een ElevenLabs-API-key nodig, buiten de repo:
+Voor de video met spraak is een ElevenLabs-API-key nodig, en voor `slides translate` een Anthropic-API-key. Beide staan buiten de repo:
 
 ```bash
-mkdir -p ~/.config/slidesmith && echo 'ELEVENLABS_API_KEY=sk_...' > ~/.config/slidesmith/secrets.env
+mkdir -p ~/.config/slidesmith && printf 'ELEVENLABS_API_KEY=sk_...\nANTHROPIC_API_KEY=sk-ant-...\n' > ~/.config/slidesmith/secrets.env
 chmod 600 ~/.config/slidesmith/secrets.env
 ```
 
@@ -54,6 +54,7 @@ Toetsen: pijltjes of spatie = volgende stap, `S` = sprekersnotities, `Esc` = ove
 | `slides video [pad] [--lang nl] [--yes]` | conceptvideo (mp4) met TTS, ondertitels en YouTube-hoofdstukken |
 | `slides check [pad] [--strict]` | bron, verwijzingen, stappen en vertalingen controleren |
 | `slides stamp [pad] [--id slide]` | vertalingen markeren als bijgewerkt |
+| `slides translate [pad] [--dry-run]` | ontbrekende/verouderde vertalingen laten maken door Claude |
 
 Formaat: [docs/FORMAAT.md](docs/FORMAAT.md). Specificatie en fasering: [SPEC.md](SPEC.md).
 

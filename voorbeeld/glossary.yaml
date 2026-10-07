@@ -1,0 +1,8 @@
+# Vaste termen voor 'slides translate' (en later 'slides review').
+keep: [firmware, esptool, ESP32, USB, FSD, Workbench]
+terms:
+  werkbank: workbench
+  flashen: flash
+  testlab: test lab
+  seriële log: serial log
+  Ishikawa-cirkel: Ishikawa Circle

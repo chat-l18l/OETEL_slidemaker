@@ -40,6 +40,7 @@ DIRECTIVES = {
     "script", "step", "reader", "notes", "labels", "col", *LANGS,
 }
 DIAGRAM_KINDS = ("boxes", "mermaid", "graphviz", "d2")
+_CLOSERS = {"slide", "include", "quiz", "question", *LANGS}
 
 _DIRECTIVE_RE = re.compile(r"^@([a-z][a-z0-9-]*)(?=\s|$)(.*)$")
 _FENCE_RE = re.compile(r"^\s*(```|~~~)")
@@ -230,8 +231,17 @@ class _ChapterParser:
         self.question = None
         self.quiz = None
 
+    def _close(self, name: str, line: int) -> None:
+        """Record where the open language block / quiz text ends, for in-place rewrites."""
+        if name in _CLOSERS:
+            if self.block is not None and self.block.end is None:
+                self.block.end = line
+            if self.qtext is not None and self.qtext.end is None:
+                self.qtext.end = line
+
     def directive(self, name: str, rest: str, i: int) -> None:
         loc = self.loc(i)
+        self._close(name, i + 1)
         if name == "slide":
             self._finish_slide()
             self._finish_quiz()
@@ -412,6 +422,7 @@ class _ChapterParser:
             self._append(line, i)
         if self.in_fence:
             self.diag.warn(Loc(self.path, len(lines)), "codeblok niet afgesloten")
+        self._close("slide", len(lines) + 1)
         self._finish_slide()
 
 

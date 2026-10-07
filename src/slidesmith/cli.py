@@ -105,6 +105,48 @@ def cmd_video(args) -> int:
     return 0
 
 
+def cmd_translate(args) -> int:
+    from . import translate
+
+    def confirm(plan) -> bool:
+        items = plan.describe()
+        print(f"te vertalen ({len(items)}):", file=sys.stderr)
+        for line in items:
+            print(f"  {line}", file=sys.stderr)
+        if args.dry_run:
+            return False
+        if args.yes:
+            return True
+        if not sys.stdin.isatty():
+            print("geen terminal om te bevestigen; gebruik --yes", file=sys.stderr)
+            return False
+        return input("doorgaan? [j/N] ").strip().lower() in ("j", "ja", "y", "yes")
+
+    diag = Diagnostics()
+    t0 = time.perf_counter()
+    course = _load(args.path, diag)
+    ids = set(args.id) if args.id else None
+    langs = [lang for lang in _langs(args.lang, course) if lang != SOURCE_LANG]
+    for lang in langs:
+        try:
+            done, usage, model = translate.run(course, lang, diag, ids, args.force, confirm)
+        except SourceError as e:
+            if args.dry_run and e.msg == "gestopt":
+                continue
+            raise
+        if not done:
+            print(f"{lang}: niets te vertalen")
+            continue
+        for d in done:
+            print(_color(DIM, f"  {lang} vertaald ") + d)
+        print(f"{lang}: {len(done)} onderdelen; {usage.summary(model)}")
+        course = _load(args.path, Diagnostics())
+    check_translations(course, diag)
+    _print_warnings(diag)
+    print(f"klaar in {time.perf_counter() - t0:.1f}s; bekijk de wijzigingen met 'git diff'")
+    return 0
+
+
 def cmd_check(args) -> int:
     diag = Diagnostics()
     course = _load(args.path, diag)
@@ -190,6 +232,14 @@ def main(argv: list[str] | None = None) -> int:
     sp.add_argument("--silent", action="store_true", help="zonder TTS: geschatte timing, geen audio")
     sp.add_argument("--subs", help="talen voor ondertitels, kommagescheiden (standaard: alle)")
     sp.set_defaults(func=cmd_video)
+
+    sp = sub.add_parser("translate", help="vertaal ontbrekende/verouderde onderdelen met Claude")
+    common(sp)
+    sp.add_argument("--id", action="append", help="alleen deze slide- of quiz-id (herhaalbaar)")
+    sp.add_argument("--force", action="store_true", help="ook bijgewerkte onderdelen opnieuw vertalen")
+    sp.add_argument("--dry-run", action="store_true", help="alleen tonen wat vertaald zou worden")
+    sp.add_argument("--yes", action="store_true", help="niet om bevestiging vragen")
+    sp.set_defaults(func=cmd_translate)
 
     sp = sub.add_parser("serve", help="bouw, serveer en herlaad automatisch bij wijzigingen")
     common(sp)

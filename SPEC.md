@@ -247,7 +247,15 @@ Fasering:
 5. OBS-koppeling + presenter view (live opname per hoofdstuk, samenvoegen)
 6. Web-versie + interactieve quiz
 
-## 17. Open vragen
+## 17. Geparkeerde ideeën
+
+- **Videoclips in slides** (2026-10-07, geparkeerd: wijkt af van het oorspronkelijke uitgangspunt "geen video-clips", §9).
+  Voorstel was een `clip`-layout (`@clip pad start= end= audio=duck|mute|keep poster= url=`):
+  live/web speelt de clip af; de conceptvideo voegt hem in met het script als voice-over;
+  slides-PDF toont posterframe + QR/link; reader toont filmstrip + QR/link.
+  Open keuze bij heropenen: hosting voor de QR-link (GitHub Pages + Git LFS, of YouTube unlisted via `url=`).
+
+## 18. Open vragen
 
 - ~~Keuze bouwen vs. bestaand~~ → **akkoord**: eigen Python-tool met reveal.js als render-engine (zie [INVENTARISATIE.md](INVENTARISATIE.md)).
 - Fase 1 gereed (live presentatie, thema, stappen, tijdbalk, `serve`/`check`/`stamp`).
