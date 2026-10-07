@@ -147,6 +147,38 @@ def cmd_translate(args) -> int:
     return 0
 
 
+def cmd_review(args) -> int:
+    from . import review
+
+    diag = Diagnostics()
+    t0 = time.perf_counter()
+    course = _load(args.path, diag)
+    lang = args.lang or SOURCE_LANG
+    if lang not in course.langs:
+        raise SourceError(f"taal '{lang}' staat niet in course.yaml")
+    ids = set(args.id) if args.id else None
+    rep = review.run(course, lang, diag, ids, use_ai=not args.no_ai)
+    _print_warnings(diag)
+    if args.format == "json":
+        print(rep.as_json())
+    else:
+        colors = {"error": RED, "warning": YELLOW, "suggestion": DIM}
+        for f in rep.findings:
+            head, _, rest = f.text().partition("\n")
+            print(_color(colors[f.severity], head) + ("\n" + rest if rest else ""))
+    if args.out:
+        args.out.parent.mkdir(parents=True, exist_ok=True)
+        args.out.write_text(rep.as_markdown(course.title.get(lang) or course.root.name), encoding="utf-8")
+    summary = (f"{rep.reviewed} hoofdstuk(ken): {rep.count('error')} fouten, {rep.count('warning')} "
+               f"waarschuwingen, {rep.count('suggestion')} suggesties")
+    if rep.usage is not None:
+        summary += f"; Claude: {rep.cached} uit cache, {rep.usage.summary(rep.model)}"
+    print(summary + f" ({time.perf_counter() - t0:.1f}s)", file=sys.stderr)
+    if args.strict and (rep.count("error") or rep.count("warning")):
+        return 1
+    return 0
+
+
 def cmd_check(args) -> int:
     diag = Diagnostics()
     course = _load(args.path, diag)
@@ -240,6 +272,17 @@ def main(argv: list[str] | None = None) -> int:
     sp.add_argument("--dry-run", action="store_true", help="alleen tonen wat vertaald zou worden")
     sp.add_argument("--yes", action="store_true", help="niet om bevestiging vragen")
     sp.set_defaults(func=cmd_translate)
+
+    sp = sub.add_parser("review", help="inhoudelijke review: vaste controles + Claude, als rapport")
+    sp.add_argument("path", nargs="?", type=Path, default=Path("."),
+                    help="cursusmap, lesmap of hoofdstukbestand (standaard: .)")
+    sp.add_argument("--lang", help="te reviewen taal (standaard: nl)")
+    sp.add_argument("--id", action="append", help="alleen deze slide- of hoofdstuk-id (herhaalbaar)")
+    sp.add_argument("--no-ai", action="store_true", help="alleen de vaste controles, zonder Claude")
+    sp.add_argument("--strict", action="store_true", help="exit-code 1 bij fouten of waarschuwingen")
+    sp.add_argument("--format", choices=["text", "json"], default="text")
+    sp.add_argument("--out", type=Path, help="schrijf het rapport ook als Markdown naar dit bestand")
+    sp.set_defaults(func=cmd_review)
 
     sp = sub.add_parser("serve", help="bouw, serveer en herlaad automatisch bij wijzigingen")
     common(sp)

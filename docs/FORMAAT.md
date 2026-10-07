@@ -245,6 +245,29 @@ Termen worden als heel woord vervangen, hoofdlettergevoelig.
   - Daarna wordt `src=` bijgewerkt. Bekijk het resultaat met `git diff`.
   - Instructies voor het model: `src/slidesmith/prompts/translate.md`.
 
+## Review
+
+`slides review [pad] [--lang nl] [--id …] [--no-ai] [--strict] [--format text|json] [--out rapport.md]`
+geeft een rapport met `bestand:regel: [ernst] categorie: melding` en een concreet voorstel. Het wijzigt niets aan de bron.
+
+- **Vaste controles** (gratis, ook met `--no-ai`):
+  - te veel woorden op een slide (standaard 40, niet bij `code` en `table`),
+  - te veel bullets (6),
+  - bullets of takeaways langer dan 60 tekens,
+  - keypoints die geen slide behandelt of die niet in een quizvraag terugkomen.
+- **Claude**, één verzoek per hoofdstuk, controleert op: spelling, terminologie (met de woordenlijst),
+  of het script past bij de slide en de stap, uitspreekbaarheid voor TTS, tekstdichtheid, duidelijkheid,
+  dekking van de keypoints, technische juistheid en de kwaliteit van de quizvragen.
+- **Ernst:** `error` (fout, of breekt de presentatie of video), `warning` (oplossen vóór publicatie), `suggestion`.
+- **Cache:** resultaten worden opgeslagen op basis van een hash van de hoofdstukinhoud, de prompt en het model.
+  Een ongewijzigd hoofdstuk kost bij de volgende run niets.
+- **`--strict`:** exit-code 1 bij een fout of waarschuwing, bijvoorbeeld in een git pre-push-hook:
+  ```bash
+  pixi run slides review mijn-cursus --strict
+  ```
+- **Drempels** zijn instelbaar in `course.yaml`: `review: {max_words: 40, max_bullets: 6, max_line_chars: 60}`.
+- **Instructies voor het model:** `src/slidesmith/prompts/review.md`.
+
 ### glossary.yaml
 
 In de cursusroot. Gebruikt door `slides translate` (en later `slides review`):

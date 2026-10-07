@@ -55,6 +55,7 @@ Toetsen: pijltjes of spatie = volgende stap, `S` = sprekersnotities, `Esc` = ove
 | `slides check [pad] [--strict]` | bron, verwijzingen, stappen en vertalingen controleren |
 | `slides stamp [pad] [--id slide]` | vertalingen markeren als bijgewerkt |
 | `slides translate [pad] [--dry-run]` | ontbrekende/verouderde vertalingen laten maken door Claude |
+| `slides review [pad] [--strict] [--no-ai]` | inhoudelijke review als rapport met bestand:regel |
 
 Formaat: [docs/FORMAAT.md](docs/FORMAAT.md). Specificatie en fasering: [SPEC.md](SPEC.md).
 
